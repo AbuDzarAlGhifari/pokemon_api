@@ -2,21 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
-*{
-    padding: 0;
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-}
-body{
-    background-color: #1cc7a8;
-}
-.img-card{
-    justify-content: center;
-    align-items: center;
-    width: 50%;
-    margin: auto;
-}
 
 .left-content,.right-content{
     flex-basis: 50%;
@@ -63,21 +48,5 @@ body{
     border-radius: 8px;
     margin-left: 1rem;
 }
-.base-stat{
-    margin-top: 1rem;
-}
-.btn-group{
-    display: flex;
-}
-.btn-group button{
-    outline: none;
-    border: none;
-    width: 150px;
-    padding: 0.3rem 0;
-    margin: 1rem;
-    font-size: 17px;
-    font-weight: bold;
-    color: white;
-    background-color: #b74555;
-    border-radius: 8px;
-}
+
+

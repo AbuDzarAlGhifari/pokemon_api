@@ -1,13 +1,13 @@
-import React from 'react'
+import React from "react";
 
-import Find from '../Components/Find'
+import Find from "../Components/Find";
 
 const Cari = () => {
   return (
-    <div>
-        <Find/>
+    <div className="bg-[#1cc7a8] min-h-screen">
+      <Find />
     </div>
-  )
-}
+  );
+};
 
-export default Cari
+export default Cari;
