@@ -1,10 +1,12 @@
-import React from 'react'
-import Main from '../Components/Main'
+import React from "react";
+import Main from "../Components/Main";
 
 const Home = () => {
   return (
-    < Main />
-  )
-}
+    <div className="bg-yellow-200">
+      <Main />
+    </div>
+  );
+};
 
-export default Home
+export default Home;

@@ -9,6 +9,8 @@ const Main = () => {
   const [url, setUrl] = useState("https://pokeapi.co/api/v2/pokemon?limit=9");
   const [nextUrl, setNextUrl] = useState();
   const [prevUrl, setPrevUrl] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState();
   const [pokeDex, setPokeDex] = useState();
 
   const pokeFun = async () => {
@@ -16,6 +18,8 @@ const Main = () => {
     const res = await axios.get(url);
     setNextUrl(res.data.next);
     setPrevUrl(res.data.previous);
+    setCurrentPage(getPageNumber(url));
+    setTotalPages(getTotalPages(res.data.count));
     getPokemon(res.data.results);
     setLoading(false);
   };
@@ -31,6 +35,15 @@ const Main = () => {
     });
   };
 
+  const getPageNumber = (url) => {
+    const match = url.match(/offset=(\d+)/);
+    return match ? Math.ceil((parseInt(match[1], 10) + 1) / 9) : 1;
+  };
+
+  const getTotalPages = (totalCount) => {
+    return Math.ceil(totalCount / 9);
+  };
+
   useEffect(() => {
     pokeFun();
   }, [url]);
@@ -43,7 +56,7 @@ const Main = () => {
           loading={loading}
           infoPokemon={(poke) => setPokeDex(poke)}
         />
-        <div className="flex py-2 sm:py-4 px-2 sm:px-3 lg:px-8 text-xs sm:text-sm lg:text-lg gap-3 text-center text-white font-semibold">
+        <div className="flex py-2 sm:py-4 px-2 sm:px-3 lg:px-8 text-[9px] sm:text-sm lg:text-lg gap-3 text-center text-white font-semibold">
           {prevUrl && (
             <button
               className="bg-orange-700 hover:bg-orange-900 border-2 border-orange-800 hover:border-orange-950 text-orange-200 px-2 py-1 rounded-md font-poppins font-semibold transition-all"
@@ -65,10 +78,13 @@ const Main = () => {
               Next
             </button>
           )}
+          <span className="flex items-center justify-center font-poppins font-bold text-orange-950 text-[9px] sm:text-sm lg:text-lg">
+            {currentPage} of {totalPages}
+          </span>
         </div>
       </div>
 
-      <div className="pt-4  mx-1 right-content">
+      <div className="pt-4 mx-1 right-content">
         <Pokeinfo data={pokeDex} />
       </div>
     </div>

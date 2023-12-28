@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const PokemonDetail = () => {
   const { id } = useParams();
   const [pokemon, setPokemon] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,7 +43,12 @@ const PokemonDetail = () => {
 
   return (
     <div className="bg-yellow-200 min-h-screen py-4">
-      <div className="mx-2 sm:mx-4 lg:mx-6 rounded-md border-2 border-orange-950 bg-orange-600 bg-opacity-40">
+      <h1
+        className="flex mx-3 sm:mx-4 lg:mx-6 text-sm sm:text-lg lg:text-xl font-poppins font-extrabold cursor-pointer justify-end underline italic text-orange-600 hover:text-orange-950"
+        onClick={() => navigate(-1)}>
+        Back
+      </h1>
+      <div className="mt-2 mx-2 sm:mx-4 lg:mx-6 rounded-md border-2 border-orange-950 bg-orange-600 bg-opacity-40">
         <h2 className="text-center text-lg sm:text-xl lg:text-2xl font-poppins font-extrabold text-orange-950 mb-3 sm:mb-4 lg:mb-5 bg-orange-500 bg-opacity-60 rounded-t-md py-2 border-b-2 border-orange-950">
           {name}
         </h2>
@@ -107,20 +115,29 @@ const PokemonDetail = () => {
           <div className="grid grid-cols-2 justify-center mt-4">
             {Object.entries(sprites).map(([key, value]) => (
               <div key={key} className="flex flex-col items-center">
-                <p className="text-sm sm:text-lg lg:text-xl font-poppins italic font-bold text-orange-900">{key}</p>
-                <img src={value} alt={key} className="w-16 sm:w-24 lg:w-36 h-16 sm:h-24 lg:h-36 mb-3" />
+                <p className="text-sm sm:text-lg lg:text-xl font-poppins italic font-bold text-orange-900">
+                  {key}
+                </p>
+                <img
+                  src={value}
+                  alt={key}
+                  className="w-16 sm:w-24 lg:w-36 h-16 sm:h-24 lg:h-36 mb-3"
+                />
               </div>
             ))}
           </div>
           <div className="mt-2">
-            <h2 className="text-center text-lg sm:text-xl lg:text-2xl font-extrabold font-poppins text-orange-950 mb-2">Moves</h2>
+            <h2 className="text-center text-lg sm:text-xl lg:text-2xl font-extrabold font-poppins text-orange-950 mb-2">
+              Moves
+            </h2>
             <div className="flex flex-wrap gap-2 justify-center mx-2 sm:mx-3 lg:mx-4">
               {moves.map((move, index) => (
-                <span
+                <Link
                   key={index}
+                  to={`/moves/${move.move.name}`}
                   className="bg-orange-900 px-2 py-1 text-xs sm:text-lg lg:text-xl text-orange-200 rounded-md">
                   {move.move.name}
-                </span>
+                </Link>
               ))}
             </div>
           </div>
