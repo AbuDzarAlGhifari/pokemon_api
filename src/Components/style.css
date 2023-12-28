@@ -1,52 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-
-.left-content,.right-content{
+  
+  .left-content, .right-content {
     flex-basis: 50%;
-}
-.left-content{
-    width: 50%;
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(150px,0.5fr));
-    grid-gap:2rem;
-}
-.right-content{
+  }
+  
+  .right-content {
     width: 50%;
     text-align: center;
-    justify-items: center;
-    align-items: center;
-    color: black;
-    position: fixed;
-    top:100px;
-    right: 10px;
-}
-.right-content img{
-    margin: auto;
-    width: 20%;
-    height: 50%;
-}
-.right-content h1{
-    text-transform: uppercase;
-    font-weight: bold;
-    letter-spacing: 1px;
-}
-.abilities{
-    width: 70%;
-    margin: auto;
-    display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 1rem;
+  }
+  
+  .right-content img {
+    margin: auto;
+  }
+
+.exp {
+    text-shadow: 0 0 .10em #000000;
 }
-.abilities .group{
-    background-color: #b74555;
-    color: white;
-    padding: 0.5rem;
-    font-size: 12px;
-    border-radius: 8px;
-    margin-left: 1rem;
-}
+
+
 
 
