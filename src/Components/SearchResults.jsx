@@ -70,7 +70,7 @@ const SearchResults = () => {
         onClick={() => navigate(-1)}>
         Back
       </h1>
-      <h1 className="text-lg sm:xl lg:2xl: font-extrabold font-poppins mx-2 sm:mx-4 lg:mx-6">
+      <h1 className="text-lg sm:xl lg:2xl: font-extrabold font-poppins mx-2 sm:mx-4 lg:mx-6 text-orange-700">
         Search Results for "{searchTerm}"
       </h1>
       <div className="mx-2 sm:mx-4 lg:mx-6 rounded-md border-2 border-orange-950 bg-orange-600 bg-opacity-40">
@@ -145,7 +145,7 @@ const SearchResults = () => {
               {evolutionChainData.map((evolution, index) => (
                 <div key={index} className="flex flex-col items-center">
                   <p className="text-sm sm:text-lg lg:text-xl font-poppins italic font-bold text-orange-900">
-                    {evolution.speciesName}
+                    #{evolution.speciesName}
                   </p>
                 </div>
               ))}

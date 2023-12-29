@@ -2,7 +2,11 @@ import React from "react";
 
 const Card = ({ pokemon, loading, infoPokemon }) => {
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center">
+        <div className="spinner"></div>
+      </div>
+    );
   }
 
   return (

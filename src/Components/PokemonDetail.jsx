@@ -138,7 +138,7 @@ const PokemonDetail = () => {
               {evolutionChainData.map((evolution, index) => (
                 <div key={index} className="flex flex-col items-center">
                   <p className="text-sm sm:text-lg lg:text-xl font-poppins italic font-bold text-orange-900">
-                    {evolution.speciesName}
+                    #{evolution.speciesName}
                   </p>
                 </div>
               ))}
