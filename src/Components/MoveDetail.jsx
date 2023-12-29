@@ -26,7 +26,16 @@ const MoveDetail = () => {
     return <div className="bg-yellow-200 min-h-screen py-4">Loading...</div>;
   }
 
-  const { name, power, pp, accuracy, effect_entries } = move;
+  const {
+    name,
+    power,
+    pp,
+    accuracy,
+    effect_entries,
+    damage_class,
+    type,
+    target,
+  } = move;
 
   return (
     <div className="bg-yellow-200 min-h-screen py-4">
@@ -41,41 +50,56 @@ const MoveDetail = () => {
             {name}
           </h2>
           <div className="flex flex-col">
-            <p className="text-left mx-1 sm:mx-8 text-sm sm:text-lg">Power</p>
+            <p className="text-left font-poppins font-bold mx-1 sm:mx-8 text-sm sm:text-lg">
+              Power
+            </p>
             <div className="bg-gray-400 h-3 sm:h-5 relative rounded-sm mx-1 sm:mx-8">
               <div
                 className="bg-orange-700 h-full rounded-sm"
-                style={{ width: `${(power / 100) * 100}%` }}></div>
-              <p className="absolute top-0 right-0 mr-1 text-[9px] sm:text-sm text-orange-950">
-                {power}
+                style={{ width: `${(power / 450) * 100}%` }}></div>
+              <p className="absolute font-poppins font-bold top-0 right-0 mr-1 text-[9px] sm:text-sm text-orange-950">
+                {power}/450
               </p>
             </div>
           </div>
 
           <div className="flex flex-col">
-            <p className="text-left mx-1 sm:mx-8 text-sm sm:text-lg">PP</p>
+            <p className="text-left font-poppins font-bold mx-1 sm:mx-8 text-sm sm:text-lg">
+              PP
+            </p>
             <div className="bg-gray-400 h-3 sm:h-5 relative rounded-sm mx-1 sm:mx-8">
               <div
                 className="bg-orange-700 h-full rounded-sm"
                 style={{ width: `${(pp / 100) * 100}%` }}></div>
-              <p className="absolute top-0 right-0 mr-1 text-[9px] sm:text-sm text-orange-950">
-                {pp}
+              <p className="absolute font-poppins font-bold top-0 right-0 mr-1 text-[9px] sm:text-sm text-orange-950">
+                {pp}/100
               </p>
             </div>
           </div>
 
           <div className="flex flex-col">
-            <p className="text-left mx-1 sm:mx-8 text-sm sm:text-lg">
+            <p className="text-left font-poppins font-bold mx-1 sm:mx-8 text-sm sm:text-lg">
               Accuracy
             </p>
             <div className="bg-gray-400 h-3 sm:h-5 relative rounded-sm mx-1 sm:mx-8">
               <div
                 className="bg-orange-700 h-full rounded-sm"
                 style={{ width: `${(accuracy / 100) * 100}%` }}></div>
-              <p className="absolute top-0 right-0 mr-1 text-[9px] sm:text-sm text-orange-950">
-                {accuracy}
+              <p className="absolute font-poppins font-bold top-0 right-0 mr-1 text-[9px] sm:text-sm text-orange-950">
+                {accuracy}%
               </p>
             </div>
+          </div>
+          <div className="mt-2">
+            <p className="text-justify font-poppins font-bold mx-1 sm:mx-8 text-sm sm:text-lg lg:text-xl">
+              Damage Class : {damage_class?.name || "Unknown"}
+            </p>
+            <p className="text-justify font-poppins font-bold mx-1 sm:mx-8 text-sm sm:text-lg lg:text-xl">
+              Type : {type?.name || "Unknown"}
+            </p>
+            <p className="text-justify font-poppins font-bold mx-1 sm:mx-8 text-sm sm:text-lg lg:text-xl">
+              Target : {target?.name || "Unknown"}
+            </p>
           </div>
           <div className="mt-2">
             <h2 className="text-center text-lg sm:text-xl lg:text-2xl font-extrabold font-poppins text-orange-950 mb-2">
@@ -84,7 +108,7 @@ const MoveDetail = () => {
             {effect_entries.map((entry, index) => (
               <p
                 key={index}
-                className="text-justify mx-1 sm:mx-4 text-sm sm:text-lg lg:text-xl">
+                className="text-justify font-poppins font-bold mx-1 sm:mx-8 text-sm sm:text-lg lg:text-xl">
                 {entry.effect}
               </p>
             ))}

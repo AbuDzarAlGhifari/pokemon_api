@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 const PokemonDetail = () => {
   const { id } = useParams();
   const [pokemon, setPokemon] = useState(null);
+  const [evolutionChain, setEvolutionChain] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,6 +17,11 @@ const PokemonDetail = () => {
           `https://pokeapi.co/api/v2/pokemon/${id}`
         );
         setPokemon(response.data);
+        const speciesResponse = await axios.get(response.data.species.url);
+        const evolutionChainResponse = await axios.get(
+          speciesResponse.data.evolution_chain.url
+        );
+        setEvolutionChain(evolutionChainResponse.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -24,7 +30,7 @@ const PokemonDetail = () => {
     fetchData();
   }, [id]);
 
-  if (!pokemon) {
+  if (!pokemon || !evolutionChain) {
     return <div>Loading...</div>;
   }
 
@@ -39,6 +45,8 @@ const PokemonDetail = () => {
     sprites,
     moves,
   } = pokemon;
+
+  const evolutionChainData = extractEvolutionChainData(evolutionChain);
 
   return (
     <div className="bg-yellow-200 min-h-screen py-4">
@@ -92,7 +100,7 @@ const PokemonDetail = () => {
                     className="bg-orange-700 h-full rounded-sm"
                     style={{ width: `${(stat.base_stat / 255) * 100}%` }}></div>
                   <p className="absolute top-0 right-0 mr-1 text-[9px] sm:text-sm text-orange-950">
-                    {stat.base_stat}
+                    {stat.base_stat} / 255
                   </p>
                 </div>
               </div>
@@ -106,11 +114,26 @@ const PokemonDetail = () => {
                   className="bg-orange-700 h-full rounded-sm"
                   style={{ width: `${(base_experience / 555) * 100}%` }}></div>
                 <p className="absolute top-0 right-0 mr-1 text-[9px] sm:text-sm text-orange-950">
-                  {base_experience}
+                  {base_experience} /555
                 </p>
               </div>
             </div>
           </div>
+          <div className="mt-4">
+            <h2 className="text-center text-lg sm:text-xl lg:text-2xl font-extrabold font-poppins text-orange-950 mb-2">
+              Evolution Chain
+            </h2>
+            <div className="flex flex-wrap gap-2 justify-center mx-2 sm:mx-3 lg:mx-4">
+              {evolutionChainData.map((evolution, index) => (
+                <div key={index} className="flex flex-col items-center">
+                  <p className="text-sm sm:text-lg lg:text-xl font-poppins italic font-bold text-orange-900">
+                    {evolution.speciesName}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 justify-center mt-4">
             {Object.entries(sprites).map(([key, value]) => (
               <div key={key} className="flex flex-col items-center">
@@ -144,6 +167,27 @@ const PokemonDetail = () => {
       </div>
     </div>
   );
+};
+
+const extractEvolutionChainData = (evolutionChain) => {
+  if (!evolutionChain || !evolutionChain.chain) {
+    return [];
+  }
+
+  const evolutionData = [];
+  const addEvolutionData = (chain) => {
+    const speciesName = chain.species.name;
+    evolutionData.push({ speciesName });
+
+    if (chain.evolves_to.length > 0) {
+      chain.evolves_to.forEach((nextEvolution) => {
+        addEvolutionData(nextEvolution);
+      });
+    }
+  };
+
+  addEvolutionData(evolutionChain.chain);
+  return evolutionData;
 };
 
 export default PokemonDetail;

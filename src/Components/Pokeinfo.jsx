@@ -47,7 +47,7 @@ const Pokeinfo = ({ data }) => {
                   style={{ width: `${(stat.base_stat / 255) * 100}%` }}
                 ></div>
                 <p className="absolute top-0 right-0 mr-1 text-[9px] sm:text-sm text-orange-950">
-                  {stat.base_stat}
+                  {stat.base_stat} / 255
                 </p>
               </div>
             </div>
