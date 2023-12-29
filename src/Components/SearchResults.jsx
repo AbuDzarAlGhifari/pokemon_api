@@ -39,9 +39,12 @@ const SearchResults = () => {
           onClick={() => navigate(-1)}>
           Back
         </h1>
-        <h1 className="text-lg sm:xl lg:2xl: font-extrabold font-poppins mx-2 sm:mx-4 lg:mx-6">
+        <h1 className="text-lg sm:xl lg:2xl font-extrabold font-poppins mx-2 sm:mx-4 lg:mx-6 text-orange-700">
           Search Results for "{searchTerm}"
         </h1>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="spinner"></div>
+        </div>
       </div>
     );
   }

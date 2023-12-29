@@ -31,7 +31,18 @@ const PokemonDetail = () => {
   }, [id]);
 
   if (!pokemon || !evolutionChain) {
-    return <div>Loading...</div>;
+    return (
+      <div className="bg-yellow-200 min-h-screen">
+        <h1
+          className="flex pt-2 mx-3 sm:mx-4 lg:mx-6 text-sm sm:text-lg lg:text-xl font-poppins font-extrabold cursor-pointer justify-end underline italic text-orange-600 hover:text-orange-950"
+          onClick={() => navigate(-1)}>
+          Back
+        </h1>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="spinner"></div>
+        </div>
+      </div>
+    );
   }
 
   const {
