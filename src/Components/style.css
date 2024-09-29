@@ -2,24 +2,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-  
-  .left-content, .right-content {
-    flex-basis: 50%;
-  }
-  
-  .right-content {
-    width: 50%;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .right-content img {
-    margin: auto;
-  }
+
+.left-content,
+.right-content {
+  flex-basis: 50%;
+}
+
+.right-content {
+  width: 50%;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.right-content img {
+  margin: auto;
+}
 
 .exp {
-    text-shadow: 0 0 .10em #000000;
+  text-shadow: 0 0 0.1em #000000;
 }
 
 .spinner {
@@ -28,17 +29,21 @@
   display: grid;
   color: #8c4400;
   background: linear-gradient(currentColor 0 0) center/100% 3.4px,
-         linear-gradient(currentColor 0 0) center/3.4px 100%;
+    linear-gradient(currentColor 0 0) center/3.4px 100%;
   background-repeat: no-repeat;
   animation: spinner-slq5ph 2s infinite;
 }
 
 .spinner::before,
 .spinner::after {
-  content: "";
+  content: '';
   grid-area: 1/1;
-  background: repeating-conic-gradient(#0000 0 35deg,currentColor 0 90deg);
-  -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 3.4px),#000 0);
+  background: repeating-conic-gradient(#0000 0 35deg, currentColor 0 90deg);
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    #0000 calc(100% - 3.4px),
+    #000 0
+  );
   border-radius: 50%;
 }
 
@@ -48,11 +53,17 @@
 
 @keyframes spinner-slq5ph {
   100% {
-     transform: rotate(1turn);
+    transform: rotate(1turn);
   }
 }
 
-
-
-
-
+.landing-container {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(90deg, white 50%, black 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+}

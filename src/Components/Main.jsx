@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import Card from "./Card";
-import Pokeinfo from "./Pokeinfo";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Card from './Card';
+import Pokeinfo from './Pokeinfo';
 
 const Main = () => {
   const [pokeData, setPokeData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [url, setUrl] = useState("https://pokeapi.co/api/v2/pokemon?limit=9");
+  const [url, setUrl] = useState('https://pokeapi.co/api/v2/pokemon?limit=9');
   const [nextUrl, setNextUrl] = useState();
   const [prevUrl, setPrevUrl] = useState();
   const [currentPage, setCurrentPage] = useState(1);
@@ -49,8 +49,8 @@ const Main = () => {
   }, [url]);
 
   return (
-    <div className="flex bg-yellow-200 min-h-screen">
-      <div className="left-content pt-4">
+    <div className="flex min-h-screen bg-yellow-200">
+      <div className="pt-4 left-content">
         <Card
           pokemon={pokeData}
           loading={loading}
@@ -59,22 +59,24 @@ const Main = () => {
         <div className="flex py-2 sm:py-4 px-2 sm:px-3 lg:px-8 text-[9px] sm:text-sm lg:text-lg gap-3 text-center text-white font-semibold">
           {prevUrl && (
             <button
-              className="bg-orange-700 hover:bg-orange-900 border-2 border-orange-800 hover:border-orange-950 text-orange-200 px-2 py-1 rounded-md font-poppins font-semibold transition-all"
+              className="px-2 py-1 font-semibold text-orange-200 transition-all bg-orange-700 border-2 border-orange-800 rounded-md hover:bg-orange-900 hover:border-orange-950 font-poppins"
               onClick={() => {
                 setPokeData([]);
                 setUrl(prevUrl);
-              }}>
+              }}
+            >
               Previous
             </button>
           )}
 
           {nextUrl && (
             <button
-              className="bg-orange-700 hover:bg-orange-900 border-2 border-orange-800 hover:border-orange-950 text-orange-200 px-2 py-1 rounded-md font-poppins font-semibold transition-all"
+              className="px-2 py-1 font-semibold text-orange-200 transition-all bg-orange-700 border-2 border-orange-800 rounded-md hover:bg-orange-900 hover:border-orange-950 font-poppins"
               onClick={() => {
                 setPokeData([]);
                 setUrl(nextUrl);
-              }}>
+              }}
+            >
               Next
             </button>
           )}
