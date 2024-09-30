@@ -3,6 +3,7 @@ import landingball from '../assets/landingball.png';
 import { useSpring, animated } from '@react-spring/web';
 import { Link } from 'react-router-dom';
 import ColorThief from 'colorthief';
+import { Typewriter } from 'react-simple-typewriter';
 
 const Landing = () => {
   const [currentImage, setCurrentImage] = useState(null);
@@ -52,7 +53,7 @@ const Landing = () => {
     );
     const data = await response.json();
     const imageUrl = data.sprites.other['official-artwork'].front_default;
-    const statsData = data.stats; // Fetching stats data
+    const statsData = data.stats;
     return { imageUrl, statsData };
   };
 
@@ -60,12 +61,12 @@ const Landing = () => {
     const loadImages = async () => {
       const { imageUrl, statsData } = await fetchPokemonData();
       setCurrentImage(imageUrl);
-      setStats(statsData); // Set stats data
+      setStats(statsData);
 
       const interval = setInterval(async () => {
         const { imageUrl, statsData } = await fetchPokemonData();
         setCurrentImage(imageUrl);
-        setStats(statsData); // Update stats
+        setStats(statsData);
         setResetAnimation(true);
       }, 5000);
 
@@ -114,17 +115,25 @@ const Landing = () => {
         )}
       </animated.div>
 
-      {/* Text Content */}
       <div className="absolute inset-0 z-50 flex flex-col items-center justify-center text-center">
         <h1 className="mb-2 text-4xl font-bold text-white">
           Welcome to the Pokémon World!
         </h1>
         <p className="mb-6 text-lg text-white">
-          Discover and explore various Pokémon. Get to know their stats and
-          abilities!
+          <Typewriter
+            words={[
+              'Discover and explore various Pokémon. Get to know their stats and abilities!',
+              'You can also explore other information such as games and evolution chains as well as other Pokemon accessories.',
+              'Powered by PokeAPI V2',
+            ]}
+            loop={false}
+            cursor
+            cursorStyle="|"
+            typeSpeed={70}
+            deleteSpeed={50}
+          />
         </p>
 
-        {/* Centering Button */}
         <Link to={'/home'}>
           <button
             className="p-3 px-5 font-bold text-white rounded-md shadow"
