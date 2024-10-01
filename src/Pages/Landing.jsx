@@ -124,9 +124,8 @@ const Landing = () => {
             words={[
               'Discover and explore various Pokémon. Get to know their stats and abilities!',
               'You can also explore other information such as games and evolution chains as well as other Pokemon accessories.',
-              'Powered by PokeAPI V2',
             ]}
-            loop={false}
+            loop={2}
             cursor
             cursorStyle="|"
             typeSpeed={70}
