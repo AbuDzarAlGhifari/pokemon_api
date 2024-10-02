@@ -10,15 +10,10 @@ import { Button } from '@material-tailwind/react';
 const Home = () => {
   const [pokeData, setPokeData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [url, setUrl] = useState(
-    localStorage.getItem('pokeUrl') ||
-      'https://pokeapi.co/api/v2/pokemon?limit=12'
-  );
+  const [url, setUrl] = useState('https://pokeapi.co/api/v2/pokemon?limit=12');
   const [nextUrl, setNextUrl] = useState();
   const [prevUrl, setPrevUrl] = useState();
-  const [currentPage, setCurrentPage] = useState(
-    parseInt(localStorage.getItem('currentPage'), 10) || 1
-  );
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [pokeDex, setPokeDex] = useState();
   const [openModal, setOpenModal] = useState(false);
@@ -65,13 +60,13 @@ const Home = () => {
   };
 
   const handlePageChange = (newUrl) => {
-    setPokeData([]);
-    setUrl(newUrl);
-    localStorage.setItem('pokeUrl', newUrl);
+    if (newUrl) {
+      setPokeData([]);
+      setUrl(newUrl);
+    }
   };
 
   useEffect(() => {
-    localStorage.setItem('currentPage', currentPage);
     pokeFun();
   }, [url]);
 
