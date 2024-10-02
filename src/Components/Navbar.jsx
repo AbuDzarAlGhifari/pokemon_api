@@ -10,7 +10,7 @@ const Navbar = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const debouncedSearchTerm = useDebounce(searchTerm, 350);
 
   useEffect(() => {
     if (debouncedSearchTerm) {
@@ -74,7 +74,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="px-4 py-4 bg-orange-600 shadow-2xl shadow-black lg:px-6">
+    <nav className="px-4 py-4 bg-orange-600 lg:px-6">
       <div className="container items-center justify-between mx-auto sm:flex">
         <Link to="/" className="flex items-center justify-center text-center">
           <p className="text-xl italic font-semibold text-center text-yellow-100 exp sm:text-left font-poppins sm:text-2xl lg:text-2xl">

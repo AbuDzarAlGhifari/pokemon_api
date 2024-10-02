@@ -1,67 +1,97 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+} from '@material-tailwind/react';
+import { Link } from 'react-router-dom';
+import { IoClose } from 'react-icons/io5';
 
-const Pokeinfo = ({ data }) => {
-  if (!data) {
-    return (
-      <div className="text-sm sm:text-lg lg:text-xl font-poppins font-bold text-orange-950">
-        Select a Pokemon for more info !!!
-      </div>
-    );
-  }
+const Pokeinfo = ({ data, openModal, setOpenModal }) => {
+  if (!openModal) return null;
+
+  const closeModal = () => {
+    setOpenModal(false);
+  };
+
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      closeModal();
+    }
+  };
 
   const { name, id, height, weight, types, stats } = data;
 
   return (
-    <div className="mx-2 sm:mx-4 lg:mx-6 rounded-md border-2 border-orange-950 bg-orange-600 bg-opacity-40">
-      <h2 className="text-lg sm:text-xl lg:text-2xl font-poppins font-extrabold text-orange-950 mb-3 sm:mb-4 lg:mb-5 bg-orange-500 bg-opacity-60 rounded-t-md py-2 border-b-2 border-orange-950">
-        {name}
-      </h2>
-      <img
-        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`}
-        alt={name}
-        className="w-24 sm:w-40 lg:w-36 h-24 sm:h-36 lg:h-40 "
-      />
-      <div className="bg-orange-500 bg-opacity-60 rounded-b-md py-2 border-t-2 border-orange-950 text-xs sm:text-lg lg:text-2xl font-poppins text-orange-950">
-        <div className="flex items-center justify-center gap-1">
-          {types.map((type) => (
-            <div
-              key={type.type.name}
-              className="bg-orange-900 p-1 px-2 text-orange-200 rounded-lg"
-            >
-              <p>{type.type.name}</p>
-            </div>
-          ))}
-        </div>
-        <div className="flex items-center justify-center gap-1 pt-1 font-bold">
-          <h1>height: {height},</h1>
-          <h1>weight: {weight}</h1>
-        </div>
-        <div className="flex flex-col font-poppins font-bold">
-          {stats.map((stat) => (
-            <div key={stat.stat.name}>
-              <p className="text-left mx-1 sm:mx-8 text-sm sm:text-lg">{stat.stat.name}</p>
-              <div className="bg-gray-400 h-3 sm:h-5 relative rounded-sm mx-1 sm:mx-8">
-                <div
-                  className="bg-orange-700 h-full rounded-sm"
-                  style={{ width: `${(stat.base_stat / 255) * 100}%` }}
-                ></div>
-                <p className="absolute top-0 right-0 mr-1 text-[9px] sm:text-sm text-orange-950">
-                  {stat.base_stat} / 255
-                </p>
+    <Dialog
+      open={openModal}
+      handler={closeModal}
+      onClick={handleOverlayClick}
+      size="sm"
+      className="bg-yellow-50"
+    >
+      <DialogHeader className="flex items-center justify-between">
+        <h2 className="text-lg">Pokemon Info</h2>
+        <button type="button" className="text-gray-700" onClick={closeModal}>
+          <IoClose className="w-6 h-6" />
+        </button>
+      </DialogHeader>
+      <DialogBody className="grid grid-cols-12 rounded-md bg-yellow-50 border-orange-950 bg-opacity-40">
+        <div className="col-span-6">
+          <div className="flex items-center justify-center">
+            <img
+              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`}
+              alt={name}
+              className="w-24 h-24 sm:w-40 lg:w-36 sm:h-36 lg:h-40"
+            />
+          </div>
+          <h2 className="py-2 text-lg font-extrabold text-center font-poppins">
+            {name}
+          </h2>
+          <div className="flex items-center justify-center gap-1">
+            {types.map((type) => (
+              <div
+                key={type.type.name}
+                className="p-1 px-2 text-orange-200 bg-orange-900 rounded-lg"
+              >
+                <p>{type.type.name}</p>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-
-        <Link
-          to={`/pokemon/${name}`}
-          className="bg-orange-700 hover:bg-orange-900 border-2 border-orange-800 hover:border-orange-950 text-orange-200 font-poppins font-semibold transition-all px-2 py-1 rounded-md mt-4 inline-block"
-        >
-          More Info
+        <div className="col-span-6 py-2 text-xs bg-orange-200 border-t-2 bg-opacity-60 rounded-b-md border-orange-950 sm:text-lg font-poppins text-orange-950">
+          <div className="flex items-center justify-center gap-1 pt-1 font-bold">
+            <h1>Height: {height},</h1>
+            <h1>Weight: {weight}</h1>
+          </div>
+          <div className="flex flex-col font-bold font-poppins">
+            {stats.map((stat) => (
+              <div key={stat.stat.name}>
+                <p className="mx-1 text-sm text-left sm:mx-8 sm:text-lg">
+                  {stat.stat.name}
+                </p>
+                <div className="relative h-2 mx-1 bg-gray-400 rounded-sm sm:h-5 sm:mx-8">
+                  <div
+                    className="h-full bg-orange-700 rounded-sm"
+                    style={{ width: `${(stat.base_stat / 255) * 100}%` }}
+                  ></div>
+                  <p className="absolute top-0 right-0 mr-1 text-[9px] sm:text-sm text-orange-950">
+                    {stat.base_stat} / 255
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </DialogBody>
+      <DialogFooter>
+        <Link to={`/pokemon/${name}`}>
+          <Button color="deep-orange">More Info</Button>
         </Link>
-      </div>
-    </div>
+      </DialogFooter>
+    </Dialog>
   );
 };
 
