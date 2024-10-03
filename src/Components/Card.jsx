@@ -53,7 +53,10 @@ const Card = ({ pokemon, loading, infoPokemon }) => {
               <div>
                 <div className="flex items-center justify-center">
                   <img
-                    src={poke.sprites?.other['official-artwork']?.front_default}
+                    src={
+                      poke.sprites?.other['official-artwork']?.front_default ||
+                      poke.sprites?.front_default
+                    }
                     alt={poke.name}
                     className="w-10 h-10 sm:w-24 lg:w-36 sm:h-24 lg:h-36"
                     crossOrigin="anonymous"
