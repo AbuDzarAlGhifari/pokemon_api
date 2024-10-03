@@ -15,6 +15,14 @@ const SkeletonCard = () => (
   </div>
 );
 
+const darkenColor = (color) => {
+  const [r, g, b] = color;
+  return `rgb(${Math.max(r - 50, 0)}, ${Math.max(g - 50, 0)}, ${Math.max(
+    b - 50,
+    0
+  )})`;
+};
+
 const Card = ({ pokemon, loading, infoPokemon }) => {
   const [bgColors, setBgColors] = useState({});
   const colorThief = useRef(new ColorThief());
@@ -24,13 +32,13 @@ const Card = ({ pokemon, loading, infoPokemon }) => {
       const color = colorThief.current.getColor(img);
       setBgColors((prevColors) => ({
         ...prevColors,
-        [pokeId]: `rgb(${color[0]}, ${color[1]}, ${color[2]}, 0.8)`,
+        [pokeId]: `rgb(${color[0]}, ${color[1]}, ${color[2]}, 0.9)`,
       }));
     }
   };
 
   return (
-    <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+    <div className="grid grid-cols-3 gap-4 sm:grid-cols-5">
       {loading
         ? Array.from({ length: 12 }).map((_, index) => (
             <SkeletonCard key={index} />
@@ -39,7 +47,7 @@ const Card = ({ pokemon, loading, infoPokemon }) => {
             <div
               key={poke.id}
               onClick={() => infoPokemon(poke)}
-              className="flex items-center justify-center py-2 mb-2 text-sm text-center text-yellow-200 border border-gray-500 rounded-lg cursor-pointer hover:border-orange-950 sm:text-lg lg:text-xl font-poppins "
+              className="flex items-center justify-center py-2 mb-2 text-center border border-gray-500 rounded-md cursor-pointer hover:border-orange-950 sm:text-lg lg:text-xl font-poppins"
               style={{ backgroundColor: bgColors[poke.id] || 'gray' }}
             >
               <div>
@@ -52,12 +60,23 @@ const Card = ({ pokemon, loading, infoPokemon }) => {
                     onLoad={(e) => handleImageLoad(e.target, poke.id)}
                   />
                 </div>
-                <h1 className="text-xs capitalize sm:text-lg">{poke.name}</h1>
+                <h1
+                  className="text-xs font-extrabold capitalize sm:text-lg"
+                  style={{
+                    color: darkenColor(
+                      bgColors[poke.id]
+                        ? bgColors[poke.id].match(/\d+/g).map(Number)
+                        : [128, 128, 128]
+                    ),
+                  }}
+                >
+                  {poke.name}
+                </h1>
                 <div className="flex justify-center mt-1">
                   {poke.types.map((type, index) => (
                     <span
                       key={index}
-                      className={`px-2 py-0.5 mx-1 text-white text-[10px] sm:text-sm rounded-lg ${
+                      className={`px-2 py-1 mx-1 text-white text-[10px] sm:text-sm rounded-lg ${
                         typeColors[type.type.name] || 'bg-gray-400'
                       }`}
                     >
