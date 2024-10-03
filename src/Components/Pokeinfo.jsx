@@ -29,19 +29,31 @@ const Pokeinfo = ({ data, openModal, setOpenModal }) => {
     }
   };
 
+  const darkenColor = (color) => {
+    if (!color) return 'rgb(128, 128, 128)';
+    const rgb = color.match(/\d+/g).map(Number);
+    const [r, g, b] = rgb;
+    return `rgb(${Math.max(r - 50, 0)}, ${Math.max(g - 50, 0)}, ${Math.max(
+      b - 50,
+      0
+    )})`;
+  };
+
   if (!openModal) return null;
 
-  const closeModal = () => {
-    setOpenModal(false);
-  };
+  const closeModal = () => setOpenModal(false);
 
   const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) {
-      closeModal();
-    }
+    if (e.target === e.currentTarget) closeModal();
   };
 
-  const { id, name, height, weight, types, stats, sprites } = data;
+  const getStatColor = (stat) => {
+    if (stat <= 50) return 'to-red-400';
+    if (stat <= 100) return 'to-green-400';
+    return 'to-blue-400';
+  };
+
+  const { id, name, height, weight, types = [], stats = [], sprites } = data;
 
   return (
     <Dialog
@@ -49,26 +61,31 @@ const Pokeinfo = ({ data, openModal, setOpenModal }) => {
       handler={closeModal}
       onClick={handleOverlayClick}
       size="sm"
+      className="rounded-md"
       style={{ backgroundColor: bgColors[id] || 'gray' }}
     >
       <DialogHeader className="flex items-center justify-between">
-        <h2 className="text-lg">Pokemon Info</h2>
+        <h2 className="text-lg text-gray-800">Pokemon Info</h2>
         <button type="button" className="text-gray-700" onClick={closeModal}>
-          <IoClose className="w-6 h-6" />
+          <IoClose className="w-6 h-6 text-gray-800" />
         </button>
       </DialogHeader>
-      <DialogBody className="grid grid-cols-12 ">
+      <DialogBody className="grid grid-cols-12">
         <div className="col-span-6">
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center h-full">
             <img
               src={sprites?.other['official-artwork']?.front_default}
               alt={name}
-              className="w-24 h-24 sm:w-40 lg:w-36 sm:h-36 lg:h-40"
               crossOrigin="anonymous"
               onLoad={(e) => handleImageLoad(e.target, id)}
             />
           </div>
-          <h2 className="py-2 text-lg font-extrabold text-center font-poppins">
+        </div>
+        <div className="col-span-6 py-4 text-xs rounded-md bg-opacity-40 bg-gray-50 sm:text-lg font-poppins text-gray-950">
+          <h2
+            className="py-2 text-lg font-extrabold text-center font-poppins"
+            style={{ color: darkenColor(bgColors[id]) }}
+          >
             {name}
           </h2>
           <div className="flex items-center justify-center gap-1">
@@ -83,24 +100,35 @@ const Pokeinfo = ({ data, openModal, setOpenModal }) => {
               </span>
             ))}
           </div>
-        </div>
-        <div className="col-span-6 py-2 text-xs bg-gray-200 bg-opacity-60 rounded-b-md sm:text-lg font-poppins text-gray-950">
-          <div className="flex items-center justify-center gap-1 pt-1 font-bold">
-            <h1>Height: {height},</h1>
-            <h1>Weight: {weight}</h1>
+          <div
+            className="flex items-center justify-center gap-2 pb-3 font-bold"
+            style={{ color: darkenColor(bgColors[id]) }}
+          >
+            <h1 className="text-sm sm:text-md">Height: {height}</h1>
+            <span className="mx-2">|</span>
+            <h1 className="text-sm sm:text-md">Weight: {weight}</h1>
           </div>
+
           <div className="flex flex-col font-bold font-poppins">
             {stats.map((stat) => (
-              <div key={stat.stat.name}>
-                <p className="mx-1 text-sm text-left sm:mx-8 sm:text-lg">
+              <div key={stat.stat.name} className="my-0.5">
+                <p
+                  className="mx-1 text-sm capitalize sm:mx-8 sm:text-md"
+                  style={{ color: darkenColor(bgColors[id]) }}
+                >
                   {stat.stat.name}
                 </p>
-                <div className="relative h-2 mx-1 bg-gray-400 rounded-sm sm:h-5 sm:mx-8">
+                <div className="relative h-3 mx-1 overflow-hidden bg-gray-400 rounded-full sm:h-3.5 sm:mx-8">
                   <div
-                    className="h-full bg-gray-700 rounded-sm"
+                    className={`h-full rounded-full bg-gradient-to-r from-gray-400  ${getStatColor(
+                      stat.base_stat
+                    )}`}
                     style={{ width: `${(stat.base_stat / 255) * 100}%` }}
                   ></div>
-                  <p className="absolute top-0 right-0 mr-1 text-[9px] sm:text-sm text-gray-950">
+                  <p
+                    className="absolute top-0 right-0 mr-1 text-[10px] sm:text-xs "
+                    style={{ color: darkenColor(bgColors[id]) }}
+                  >
                     {stat.base_stat} / 255
                   </p>
                 </div>
@@ -111,7 +139,9 @@ const Pokeinfo = ({ data, openModal, setOpenModal }) => {
       </DialogBody>
       <DialogFooter className="flex justify-center w-full">
         <Link to={`/pokemon/${name}`} className="w-1/2">
-          <Button fullWidth>More Info</Button>
+          <Button fullWidth className="bg-gray-800">
+            More Info
+          </Button>
         </Link>
       </DialogFooter>
     </Dialog>
