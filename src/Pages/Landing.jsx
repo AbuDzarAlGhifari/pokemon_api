@@ -2,8 +2,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import landingball from '../assets/landingball.png';
 import { useSpring, animated } from '@react-spring/web';
 import { Link } from 'react-router-dom';
-import ColorThief from 'colorthief';
+import { fetchPokemonData } from '../services/api';
 import { Typewriter } from 'react-simple-typewriter';
+import ColorThief from 'colorthief';
 
 const Landing = () => {
   const [currentImage, setCurrentImage] = useState(null);
@@ -33,44 +34,24 @@ const Landing = () => {
     config: { mass: 1, tension: 150, friction: 10 },
   });
 
-  const getColorFromImage = (imageElement) => {
-    const colorThief = new ColorThief();
-    if (imageElement && imageElement.complete) {
-      const color = colorThief.getColor(imageElement);
-      setBgColor(`rgb(${color[0]}, ${color[1]}, ${color[2]}, 0.8 )`);
-    } else {
-      imageElement.addEventListener('load', () => {
-        const color = colorThief.getColor(imageElement);
-        setBgColor(`rgb(${color[0]}, ${color[1]}, ${color[2]}, 0.8)`);
-      });
-    }
-  };
-
-  const fetchPokemonData = async () => {
-    const randomId = Math.floor(Math.random() * 898) + 1;
-    const response = await fetch(
-      `https://pokeapi.co/api/v2/pokemon/${randomId}`
-    );
-    const data = await response.json();
-    const imageUrl = data.sprites.other['official-artwork'].front_default;
-    const statsData = data.stats;
-    return { imageUrl, statsData };
-  };
-
   useEffect(() => {
     const loadImages = async () => {
-      const { imageUrl, statsData } = await fetchPokemonData();
-      setCurrentImage(imageUrl);
-      setStats(statsData);
-
-      const interval = setInterval(async () => {
+      try {
         const { imageUrl, statsData } = await fetchPokemonData();
         setCurrentImage(imageUrl);
         setStats(statsData);
-        setResetAnimation(true);
-      }, 7000);
 
-      return () => clearInterval(interval);
+        const interval = setInterval(async () => {
+          const { imageUrl, statsData } = await fetchPokemonData();
+          setCurrentImage(imageUrl);
+          setStats(statsData);
+          setResetAnimation(true);
+        }, 7000);
+
+        return () => clearInterval(interval);
+      } catch (error) {
+        console.error(error);
+      }
     };
 
     loadImages();
@@ -80,9 +61,27 @@ const Landing = () => {
     setBallAnimationTrigger((prev) => !prev);
   }, [currentImage]);
 
+  const getColorFromImage = (imageElement) => {
+    const colorThief = new ColorThief();
+    if (imageElement && imageElement.complete) {
+      return colorThief.getColor(imageElement);
+    }
+    return null;
+  };
+
   useEffect(() => {
     if (imgRef.current) {
-      getColorFromImage(imgRef.current);
+      const color = getColorFromImage(imgRef.current);
+      if (color) {
+        setBgColor(`rgb(${color[0]}, ${color[1]}, ${color[2]}, 0.8)`);
+      } else {
+        imgRef.current.addEventListener('load', () => {
+          const color = getColorFromImage(imgRef.current);
+          if (color) {
+            setBgColor(`rgb(${color[0]}, ${color[1]}, ${color[2]}, 0.8)`);
+          }
+        });
+      }
     }
   }, [currentImage]);
 
@@ -155,6 +154,7 @@ const Landing = () => {
           }}
         />
       </div>
+
       <div className="absolute z-10 p-5 rounded shadow-lg bottom-10 right-10">
         {stats.map((stat) => (
           <div key={stat.stat.name} className="w-full max-w-xs mb-1">

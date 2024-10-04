@@ -8,7 +8,7 @@ import {
 } from '@material-tailwind/react';
 import { Link } from 'react-router-dom';
 import { IoClose } from 'react-icons/io5';
-import typeColors from './data';
+import typeColors from '../services/data';
 import ColorThief from 'colorthief';
 
 const Pokeinfo = ({ data, openModal, setOpenModal }) => {
@@ -92,7 +92,7 @@ const Pokeinfo = ({ data, openModal, setOpenModal }) => {
             {types.map((type) => (
               <span
                 key={type.type.name}
-                className={`px-2 py-1 mx-1 text-white text-[10px] sm:text-sm rounded-lg ${
+                className={`px-2 py-1 mx-1 font-poppins font-medium text-[10px] sm:text-sm rounded-lg ${
                   typeColors[type.type.name] || 'bg-gray-400'
                 }`}
               >
@@ -138,7 +138,7 @@ const Pokeinfo = ({ data, openModal, setOpenModal }) => {
         </div>
       </DialogBody>
       <DialogFooter className="flex justify-center w-full">
-        <Link to={`/pokemon/${name}`} className="w-1/2">
+        <Link to={`/pokemon/${id}`} className="w-1/2">
           <Button fullWidth className="bg-gray-800">
             More Info
           </Button>

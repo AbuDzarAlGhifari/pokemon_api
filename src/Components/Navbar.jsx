@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { IoSearchSharp } from 'react-icons/io5';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import {
+  fetchAllPokemonSearch,
+  fetchPokemonDetailsSearch,
+} from '../services/api';
 import useDebounce from '../hook/useDebounce';
 
 const Navbar = () => {
@@ -9,8 +12,8 @@ const Navbar = () => {
   const [filteredPokemon, setFilteredPokemon] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
   const debouncedSearchTerm = useDebounce(searchTerm, 350);
+  const suggestionsRef = useRef(null); // Create a ref for the suggestions list
 
   useEffect(() => {
     if (debouncedSearchTerm) {
@@ -23,29 +26,19 @@ const Navbar = () => {
   const fetchPokemon = async (query) => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `https://pokeapi.co/api/v2/pokemon?limit=10000`
-      );
-      const allPokemon = response.data.results;
+      const allPokemon = await fetchAllPokemonSearch();
       const filtered = allPokemon.filter((pokemon) =>
         pokemon.name.toLowerCase().includes(query.toLowerCase())
       );
 
       const promises = filtered
         .slice(0, 10)
-        .map((pokemon) =>
-          axios.get(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
-        );
+        .map((pokemon) => fetchPokemonDetailsSearch(pokemon.name));
 
-      const pokemonDetails = await Promise.all(promises);
-      const pokemonWithImages = pokemonDetails.map((detail) => ({
-        name: detail.data.name,
-        image: detail.data.sprites.front_default,
-      }));
-
+      const pokemonWithImages = await Promise.all(promises);
       setFilteredPokemon(pokemonWithImages);
     } catch (error) {
-      console.error('Error fetching data', error);
+      console.error('Error fetching Pokémon data', error);
     } finally {
       setLoading(false);
     }
@@ -73,6 +66,25 @@ const Navbar = () => {
     setFilteredPokemon([]);
   };
 
+  // Handle click outside of suggestions
+  const handleClickOutside = (event) => {
+    if (
+      suggestionsRef.current &&
+      !suggestionsRef.current.contains(event.target)
+    ) {
+      setFilteredPokemon([]); // Clear suggestions
+    }
+  };
+
+  useEffect(() => {
+    // Add click event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      // Clean up the event listener on component unmount
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <nav className="px-4 py-4 bg-gray-900 lg:px-6">
       <div className="container items-center justify-between mx-auto sm:flex">
@@ -85,10 +97,12 @@ const Navbar = () => {
           </p>
         </Link>
         <div className="flex items-center mt-3 sm:mt-0">
-          <div className="w-full max-w-sm min-w-[200px] relative">
+          <div
+            className="w-full max-w-sm min-w-[200px] relative"
+            ref={suggestionsRef}
+          >
             <div className="relative flex items-center">
               <IoSearchSharp className="absolute w-5 h-5 top-2.5 left-2.5 text-slate-600 text-gray-900" />
-
               <input
                 className="w-full py-2 pl-10 pr-3 text-sm text-gray-900 bg-gray-100 border border-gray-700 rounded-md shadow-sm focus:outline-none placeholder:text-gray-700"
                 placeholder="Search Pokemon"
@@ -98,7 +112,6 @@ const Navbar = () => {
               />
             </div>
 
-            {/* Dropdown for predictions */}
             {loading && (
               <div className="absolute z-10 w-full p-2 mt-1 text-center bg-gray-50">
                 Loading...
