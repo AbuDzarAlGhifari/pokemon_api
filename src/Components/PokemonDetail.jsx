@@ -1,47 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { getPokemonDetails } from '../services/api';
 
 const PokemonDetail = () => {
   const { id } = useParams();
   const [pokemon, setPokemon] = useState(null);
   const [evolutionChain, setEvolutionChain] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `https://pokeapi.co/api/v2/pokemon/${id}`
-        );
-        setPokemon(response.data);
-        const speciesResponse = await axios.get(response.data.species.url);
-        const evolutionChainResponse = await axios.get(
-          speciesResponse.data.evolution_chain.url
-        );
-        setEvolutionChain(evolutionChainResponse.data);
+        const { pokemon, evolutionChain } = await getPokemonDetails(id);
+        setPokemon(pokemon);
+        setEvolutionChain(evolutionChain);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error(error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
   }, [id]);
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-yellow-200">
+        <div className="spinner"></div>
+      </div>
+    );
+  }
+
   if (!pokemon || !evolutionChain) {
     return (
-      <div className="min-h-screen bg-yellow-200">
-        <h1
-          className="flex justify-end pt-2 mx-3 text-sm italic font-extrabold text-orange-600 underline cursor-pointer sm:mx-4 lg:mx-6 sm:text-lg lg:text-xl font-poppins hover:text-orange-950"
-          onClick={() => navigate(-1)}
-        >
-          Back
-        </h1>
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="spinner"></div>
-        </div>
+      <div className="flex items-center justify-center min-h-screen bg-yellow-200">
+        <h1>Error loading Pokémon details.</h1>
       </div>
     );
   }
@@ -91,8 +86,8 @@ const PokemonDetail = () => {
             ))}
           </div>
           <div className="flex items-center justify-center gap-1 pt-1 font-bold">
-            <h1>height: {height},</h1>
-            <h1>weight: {weight}</h1>
+            <h1>Height: {height},</h1>
+            <h1>Weight: {weight}</h1>
           </div>
           <div className="flex items-center justify-center gap-1 pt-2">
             {abilities.map((ability) => (
@@ -123,7 +118,7 @@ const PokemonDetail = () => {
             ))}
             <div className="flex flex-col">
               <p className="mx-1 text-sm text-left sm:mx-8 sm:text-lg">
-                base_experience
+                Base Experience
               </p>
               <div className="relative h-3 mx-1 bg-gray-400 rounded-sm sm:h-5 sm:mx-8">
                 <div
@@ -131,7 +126,7 @@ const PokemonDetail = () => {
                   style={{ width: `${(base_experience / 555) * 100}%` }}
                 ></div>
                 <p className="absolute top-0 right-0 mr-1 text-[9px] sm:text-sm text-orange-950">
-                  {base_experience} /555
+                  {base_experience} / 555
                 </p>
               </div>
             </div>
@@ -193,18 +188,17 @@ const extractEvolutionChainData = (evolutionChain) => {
   }
 
   const evolutionData = [];
-  const addEvolutionData = (chain) => {
-    const speciesName = chain.species.name;
-    evolutionData.push({ speciesName });
+  let currentEvolution = evolutionChain.chain;
 
-    if (chain.evolves_to.length > 0) {
-      chain.evolves_to.forEach((nextEvolution) => {
-        addEvolutionData(nextEvolution);
-      });
-    }
-  };
+  while (currentEvolution) {
+    evolutionData.push({
+      speciesId: currentEvolution.species.url.split('/').slice(-2)[0],
+      speciesName: currentEvolution.species.name,
+    });
 
-  addEvolutionData(evolutionChain.chain);
+    currentEvolution = currentEvolution.evolves_to[0];
+  }
+
   return evolutionData;
 };
 

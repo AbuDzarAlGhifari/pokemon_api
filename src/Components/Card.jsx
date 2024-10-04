@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import ColorThief from 'colorthief';
-import typeColors from './data';
+import typeColors from '../services/data';
 
 const SkeletonCard = () => (
   <div className="animate-pulse flex items-center justify-center text-center border border-gray-500 bg-blue-gray-50 rounded-lg mb-2 sm:mb-4 px-1.5 sm:px-6 lg:px-8">
@@ -79,7 +79,7 @@ const Card = ({ pokemon, loading, infoPokemon }) => {
                   {poke.types.map((type, index) => (
                     <span
                       key={index}
-                      className={`px-2 py-1 mx-1 text-white text-[10px] sm:text-sm rounded-lg ${
+                      className={`px-2 py-1 mx-1 font-poppins font-medium text-[10px] sm:text-sm rounded-lg ${
                         typeColors[type.type.name] || 'bg-gray-400'
                       }`}
                     >

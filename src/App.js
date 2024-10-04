@@ -7,17 +7,46 @@ import SearchResults from './Components/SearchResults';
 import PageNotFound from './Pages/PageNotFound';
 import MoveDetail from './Components/MoveDetail';
 import Landing from './Pages/Landing';
+import Layout from './Components/Layout';
 
 const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Landing />}></Route>
-        <Route path="/home" element={<Home />}></Route>
-        <Route path="/pokemon/:id" element={<PokemonDetail />} />
-        <Route path="/search/:term" element={<SearchResults />} />
-        <Route path="/moves/:moveName" element={<MoveDetail />} />
+        <Route path="/" element={<Landing />} />
         <Route path="*" element={<PageNotFound />} />
+        <Route
+          path="/home"
+          element={
+            <Layout>
+              <Home />
+            </Layout>
+          }
+        />
+        <Route
+          path="/pokemon/:id"
+          element={
+            <Layout>
+              <PokemonDetail />
+            </Layout>
+          }
+        />
+        <Route
+          path="/search/:term"
+          element={
+            <Layout>
+              <SearchResults />
+            </Layout>
+          }
+        />
+        <Route
+          path="/moves/:moveName"
+          element={
+            <Layout>
+              <MoveDetail />
+            </Layout>
+          }
+        />
       </Routes>
     </Router>
   );
