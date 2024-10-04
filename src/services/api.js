@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const POKEAPI_URL = 'https://pokeapi.co/api/v2/pokemon';
+const BASEAPI_URL = 'https://pokeapi.co/api/v2';
 
 // Fetch all Pokemon with pagination
 export const fetchAllPokemon = async (url) => {
@@ -10,7 +10,7 @@ export const fetchAllPokemon = async (url) => {
 
 // Fetch Pokemon by Type
 export const fetchPokemonByType = async (type) => {
-  const response = await axios.get(`https://pokeapi.co/api/v2/type/${type}`);
+  const response = await axios.get(`${BASEAPI_URL}/type/${type}`);
   return response.data.pokemon.map((p) => p.pokemon);
 };
 
@@ -22,14 +22,14 @@ export const fetchPokemonDetails = async (url) => {
 
 // Fetch all available types of Pokemon
 export const fetchAllTypes = async () => {
-  const response = await axios.get('https://pokeapi.co/api/v2/type');
+  const response = await axios.get(`${BASEAPI_URL}/type`);
   return response.data.results;
 };
 
 // Fetch Random Pokemon
 export const fetchPokemonData = async () => {
   const randomId = Math.floor(Math.random() * 898) + 1;
-  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`);
+  const response = await fetch(`${BASEAPI_URL}/pokemon/${randomId}`);
 
   if (!response.ok) {
     throw new Error('Failed to fetch Pokémon data');
@@ -43,7 +43,7 @@ export const fetchPokemonData = async () => {
 
 export const fetchAllPokemonSearch = async () => {
   try {
-    const response = await axios.get(`${POKEAPI_URL}?limit=10000`);
+    const response = await axios.get(`${BASEAPI_URL}/pokemon?limit=10000`);
     return response.data.results;
   } catch (error) {
     console.error('Error fetching all Pokémon:', error);
@@ -52,21 +52,18 @@ export const fetchAllPokemonSearch = async () => {
 };
 
 export const fetchPokemonDetailsSearch = async (pokemonName) => {
-  try {
-    const response = await axios.get(`${POKEAPI_URL}/${pokemonName}`);
-    return {
-      name: response.data.name,
-      image: response.data.sprites.front_default,
-    };
-  } catch (error) {
-    console.error(`Error fetching details for ${pokemonName}:`, error);
-    throw error;
-  }
+  const response = await fetch(`${BASEAPI_URL}/pokemon/${pokemonName}`);
+  const data = await response.json();
+  return {
+    name: data.name,
+    image: data.sprites.other['official-artwork'].front_default,
+    types: data.types.map((typeInfo) => typeInfo.type.name),
+  };
 };
 
 export const getPokemonDetails = async (id) => {
   try {
-    const response = await axios.get(`${POKEAPI_URL}/${id}`);
+    const response = await axios.get(`${BASEAPI_URL}/pokemon/${id}`);
     const speciesResponse = await axios.get(response.data.species.url);
     const evolutionChainResponse = await axios.get(
       speciesResponse.data.evolution_chain.url

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getPokemonDetails } from '../services/api';
 
 const PokemonDetail = () => {
@@ -27,7 +27,7 @@ const PokemonDetail = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-yellow-200">
+      <div className="flex items-center justify-center min-h-screen bg-gray-200">
         <div className="spinner"></div>
       </div>
     );
@@ -35,7 +35,7 @@ const PokemonDetail = () => {
 
   if (!pokemon || !evolutionChain) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-yellow-200">
+      <div className="flex items-center justify-center min-h-screen bg-gray-200">
         <h1>Error loading Pokémon details.</h1>
       </div>
     );
@@ -56,15 +56,15 @@ const PokemonDetail = () => {
   const evolutionChainData = extractEvolutionChainData(evolutionChain);
 
   return (
-    <div className="min-h-screen py-4 bg-yellow-200">
+    <div className="min-h-screen py-4 bg-gray-200">
       <h1
-        className="flex justify-end mx-3 text-sm italic font-extrabold text-orange-600 underline cursor-pointer sm:mx-4 lg:mx-6 sm:text-lg lg:text-xl font-poppins hover:text-orange-950"
+        className="flex justify-end mx-3 text-sm italic font-extrabold text-gray-600 underline cursor-pointer sm:mx-4 lg:mx-6 sm:text-lg lg:text-xl font-poppins hover:text-gray-900"
         onClick={() => navigate(-1)}
       >
         Back
       </h1>
-      <div className="mx-2 mt-2 bg-orange-600 border-2 rounded-md sm:mx-4 lg:mx-6 border-orange-950 bg-opacity-40">
-        <h2 className="py-2 mb-3 text-lg font-extrabold text-center bg-orange-500 border-b-2 sm:text-xl lg:text-2xl font-poppins text-orange-950 sm:mb-4 lg:mb-5 bg-opacity-60 rounded-t-md border-orange-950">
+      <div className="mx-2 mt-2 bg-gray-600 border-2 border-gray-900 rounded-md sm:mx-4 lg:mx-6 bg-opacity-40">
+        <h2 className="py-2 mb-3 text-lg font-extrabold text-center text-gray-900 bg-gray-500 border-b-2 border-gray-900 sm:text-xl lg:text-2xl font-poppins sm:mb-4 lg:mb-5 bg-opacity-60 rounded-t-md">
           {name}
         </h2>
         <div className="flex items-center justify-center">
@@ -74,12 +74,12 @@ const PokemonDetail = () => {
             className="w-24 h-24 sm:w-40 lg:w-36 sm:h-36 lg:h-40"
           />
         </div>
-        <div className="py-2 text-xs bg-orange-500 border-t-2 bg-opacity-60 rounded-b-md border-orange-950 sm:text-lg lg:text-2xl font-poppins text-orange-950">
+        <div className="py-2 text-xs text-gray-900 bg-gray-500 border-t-2 border-gray-900 bg-opacity-60 rounded-b-md sm:text-lg lg:text-2xl font-poppins">
           <div className="flex items-center justify-center gap-1">
             {types.map((type) => (
               <div
                 key={type.type.name}
-                className="p-1 px-2 text-orange-200 bg-orange-900 rounded-lg"
+                className="p-1 px-2 text-gray-200 bg-gray-900 rounded-lg"
               >
                 <p>{type.type.name}</p>
               </div>
@@ -93,7 +93,7 @@ const PokemonDetail = () => {
             {abilities.map((ability) => (
               <div
                 key={ability.ability.name}
-                className="p-1 px-2 text-orange-200 bg-orange-700 rounded-lg"
+                className="p-1 px-2 text-gray-200 bg-gray-700 rounded-lg"
               >
                 <p>{ability.ability.name}</p>
               </div>
@@ -107,10 +107,10 @@ const PokemonDetail = () => {
                 </p>
                 <div className="relative h-3 mx-1 bg-gray-400 rounded-sm sm:h-5 sm:mx-8">
                   <div
-                    className="h-full bg-orange-700 rounded-sm"
+                    className="h-full bg-gray-700 rounded-sm"
                     style={{ width: `${(stat.base_stat / 255) * 100}%` }}
                   ></div>
-                  <p className="absolute top-0 right-0 mr-1 text-[9px] sm:text-sm text-orange-950">
+                  <p className="absolute top-0 right-0 mr-1 text-[9px] sm:text-sm text-gray-900">
                     {stat.base_stat} / 255
                   </p>
                 </div>
@@ -122,23 +122,23 @@ const PokemonDetail = () => {
               </p>
               <div className="relative h-3 mx-1 bg-gray-400 rounded-sm sm:h-5 sm:mx-8">
                 <div
-                  className="h-full bg-orange-700 rounded-sm"
+                  className="h-full bg-gray-700 rounded-sm"
                   style={{ width: `${(base_experience / 555) * 100}%` }}
                 ></div>
-                <p className="absolute top-0 right-0 mr-1 text-[9px] sm:text-sm text-orange-950">
+                <p className="absolute top-0 right-0 mr-1 text-[9px] sm:text-sm text-gray-900">
                   {base_experience} / 555
                 </p>
               </div>
             </div>
           </div>
           <div className="mt-4">
-            <h2 className="mb-2 text-lg font-extrabold text-center sm:text-xl lg:text-2xl font-poppins text-orange-950">
+            <h2 className="mb-2 text-lg font-extrabold text-center text-gray-900 sm:text-xl lg:text-2xl font-poppins">
               Evolution Chain
             </h2>
             <div className="flex flex-wrap justify-center gap-2 mx-2 sm:mx-3 lg:mx-4">
               {evolutionChainData.map((evolution, index) => (
                 <div key={index} className="flex flex-col items-center">
-                  <p className="text-sm italic font-bold text-orange-900 sm:text-lg lg:text-xl font-poppins">
+                  <p className="text-sm italic font-bold text-gray-900 sm:text-lg lg:text-xl font-poppins">
                     #{evolution.speciesName}
                   </p>
                 </div>
@@ -146,10 +146,10 @@ const PokemonDetail = () => {
             </div>
           </div>
 
-          <div className="grid justify-center grid-cols-2 mt-4">
+          {/* <div className="grid justify-center grid-cols-2 mt-4">
             {Object.entries(sprites).map(([key, value]) => (
               <div key={key} className="flex flex-col items-center">
-                <p className="text-sm italic font-bold text-orange-900 sm:text-lg lg:text-xl font-poppins">
+                <p className="text-sm italic font-bold text-gray-900 sm:text-lg lg:text-xl font-poppins">
                   {key}
                 </p>
                 <img
@@ -159,9 +159,9 @@ const PokemonDetail = () => {
                 />
               </div>
             ))}
-          </div>
-          <div className="mt-2">
-            <h2 className="mb-2 text-lg font-extrabold text-center sm:text-xl lg:text-2xl font-poppins text-orange-950">
+          </div> */}
+          {/* <div className="mt-2">
+            <h2 className="mb-2 text-lg font-extrabold text-center text-gray-900 sm:text-xl lg:text-2xl font-poppins">
               Moves
             </h2>
             <div className="flex flex-wrap justify-center gap-2 mx-2 sm:mx-3 lg:mx-4">
@@ -169,13 +169,13 @@ const PokemonDetail = () => {
                 <Link
                   key={index}
                   to={`/moves/${move.move.name}`}
-                  className="px-2 py-1 text-xs text-orange-200 bg-orange-900 rounded-md sm:text-lg lg:text-xl"
+                  className="px-2 py-1 text-xs text-gray-200 bg-gray-900 rounded-md sm:text-lg lg:text-xl"
                 >
                   {move.move.name}
                 </Link>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
