@@ -50,7 +50,6 @@ const PokemonDetail = () => {
     base_experience,
     stats,
     sprites,
-    moves,
   } = pokemon;
 
   const evolutionChainData = extractEvolutionChainData(evolutionChain);
@@ -70,8 +69,7 @@ const PokemonDetail = () => {
         <div className="flex items-center justify-center">
           <img
             src={sprites?.other['official-artwork']?.front_default}
-            alt={sprites?.front_default}
-            className="w-24 h-24 sm:w-40 lg:w-36 sm:h-36 lg:h-40"
+            alt={name}
           />
         </div>
         <div className="py-2 text-xs text-gray-900 bg-gray-500 border-t-2 border-gray-900 bg-opacity-60 rounded-b-md sm:text-lg lg:text-2xl font-poppins">
@@ -145,37 +143,6 @@ const PokemonDetail = () => {
               ))}
             </div>
           </div>
-
-          {/* <div className="grid justify-center grid-cols-2 mt-4">
-            {Object.entries(sprites).map(([key, value]) => (
-              <div key={key} className="flex flex-col items-center">
-                <p className="text-sm italic font-bold text-gray-900 sm:text-lg lg:text-xl font-poppins">
-                  {key}
-                </p>
-                <img
-                  src={value}
-                  alt={key}
-                  className="w-16 h-16 mb-3 sm:w-24 lg:w-36 sm:h-24 lg:h-36"
-                />
-              </div>
-            ))}
-          </div> */}
-          {/* <div className="mt-2">
-            <h2 className="mb-2 text-lg font-extrabold text-center text-gray-900 sm:text-xl lg:text-2xl font-poppins">
-              Moves
-            </h2>
-            <div className="flex flex-wrap justify-center gap-2 mx-2 sm:mx-3 lg:mx-4">
-              {moves.map((move, index) => (
-                <Link
-                  key={index}
-                  to={`/moves/${move.move.name}`}
-                  className="px-2 py-1 text-xs text-gray-200 bg-gray-900 rounded-md sm:text-lg lg:text-xl"
-                >
-                  {move.move.name}
-                </Link>
-              ))}
-            </div>
-          </div> */}
         </div>
       </div>
     </div>

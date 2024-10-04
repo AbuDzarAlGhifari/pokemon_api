@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   fetchPokemonDetailsSearch,
   fetchAllPokemonSearch,
@@ -22,6 +22,7 @@ const SearchResults = () => {
   const [error, setError] = useState(null);
   const [bgColors, setBgColors] = useState({});
   const colorThief = useRef(new ColorThief());
+  const navigate = useNavigate();
 
   const handleImageLoad = (img, pokeId) => {
     if (img.complete) {
@@ -74,6 +75,7 @@ const SearchResults = () => {
           results.map((pokemon) => (
             <div
               key={pokemon.name}
+              onClick={() => navigate(`/pokemon/${pokemon.id}`)}
               style={{ backgroundColor: bgColors[pokemon.name] || 'gray' }}
               className="flex items-center justify-center py-2 mb-2 text-center border border-gray-500 rounded-md cursor-pointer hover:border-orange-950 sm:text-lg lg:text-xl font-poppins"
             >
@@ -99,7 +101,6 @@ const SearchResults = () => {
                 >
                   {pokemon.name}
                 </h1>
-                {/* Display Pokemon Types */}
                 <div className="flex justify-center mt-1 space-x-2">
                   {pokemon.types.map((type) => (
                     <span
