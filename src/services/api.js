@@ -55,6 +55,7 @@ export const fetchPokemonDetailsSearch = async (pokemonName) => {
   const response = await fetch(`${BASEAPI_URL}/pokemon/${pokemonName}`);
   const data = await response.json();
   return {
+    id: data.id,
     name: data.name,
     image: data.sprites.other['official-artwork'].front_default,
     types: data.types.map((typeInfo) => typeInfo.type.name),

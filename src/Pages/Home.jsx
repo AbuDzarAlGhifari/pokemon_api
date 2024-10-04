@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../Components/Card';
 import Pokeinfo from '../Components/Pokeinfo';
-import Navbar from '../Components/Navbar';
-import Footer from '../Components/Footer';
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 import { Button, Select, Option } from '@material-tailwind/react';
 import { useSearchParams } from 'react-router-dom';
@@ -61,7 +59,6 @@ const Home = () => {
     }
   };
 
-  // Fetch paginated Pokemon by type
   const fetchPokemonByTypePaginated = async (type, page = 1) => {
     setLoading(true);
     const filteredPokemon = await fetchPokemonByType(type);
@@ -75,7 +72,6 @@ const Home = () => {
     setLoading(false);
   };
 
-  // Get multiple Pokemon details
   const getPokemon = async (res) => {
     const newPokeData = await Promise.all(
       res.map(async (item) => {
