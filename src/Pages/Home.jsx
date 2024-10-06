@@ -31,6 +31,13 @@ const Home = () => {
     }`
   );
 
+  const scrollTop = () => {
+    window.scrollTo({
+      behavior: 'smooth',
+      top: 0,
+    });
+  };
+
   const getTotalPages = (totalCount) => Math.ceil(totalCount / 15);
 
   const handleInfoPokemon = (poke) => {
@@ -47,6 +54,7 @@ const Home = () => {
       setUrl(newUrl);
       setSearchParams({ page: newPage });
     }
+    scrollTop();
   };
 
   const handleTypeFilter = (type, page = 1) => {
