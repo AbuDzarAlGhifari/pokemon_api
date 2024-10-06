@@ -10,6 +10,26 @@ const PokemonDetail = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const extractEvolutionChainData = (evolutionChain) => {
+    if (!evolutionChain || !evolutionChain.chain) {
+      return [];
+    }
+
+    const evolutionData = [];
+    let currentEvolution = evolutionChain.chain;
+
+    while (currentEvolution) {
+      evolutionData.push({
+        speciesId: currentEvolution.species.url.split('/').slice(-2)[0],
+        speciesName: currentEvolution.species.name,
+      });
+
+      currentEvolution = currentEvolution.evolves_to[0];
+    }
+
+    return evolutionData;
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -148,26 +168,6 @@ const PokemonDetail = () => {
       </div>
     </div>
   );
-};
-
-const extractEvolutionChainData = (evolutionChain) => {
-  if (!evolutionChain || !evolutionChain.chain) {
-    return [];
-  }
-
-  const evolutionData = [];
-  let currentEvolution = evolutionChain.chain;
-
-  while (currentEvolution) {
-    evolutionData.push({
-      speciesId: currentEvolution.species.url.split('/').slice(-2)[0],
-      speciesName: currentEvolution.species.name,
-    });
-
-    currentEvolution = currentEvolution.evolves_to[0];
-  }
-
-  return evolutionData;
 };
 
 export default PokemonDetail;
