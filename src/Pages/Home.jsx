@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { Button, Option, Select, Spinner } from '@material-tailwind/react';
+import React, { useEffect, useState } from 'react';
+import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
+import { useSearchParams } from 'react-router-dom';
 import Card from '../Components/Card';
 import Pokeinfo from '../Components/Pokeinfo';
-import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
-import { Button, Select, Option } from '@material-tailwind/react';
-import { useSearchParams } from 'react-router-dom';
 import {
   fetchAllPokemon,
+  fetchAllTypes,
   fetchPokemonByType,
   fetchPokemonDetails,
-  fetchAllTypes,
 } from '../services/api';
 
 const Home = () => {
@@ -109,96 +109,98 @@ const Home = () => {
 
   return (
     <>
-      <div className="min-h-screen bg-gray-300 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-gray-500">
-        <div className="flex mx-4 pt-7 w-fit">
-          <Select
-            label="Select Type"
-            color="gray"
-            onChange={handleTypeFilter}
-            className="capitalize"
-          >
-            <Option
-              value=""
-              className={`capitalize ${
-                selectedType === '' ? 'bg-blue-500 text-white' : ''
-              }`}
+      {loading ? (
+        <div className="flex items-center justify-center min-h-screen">
+          <Spinner className="w-16 h-16 text-gray-900/50" />
+        </div>
+      ) : (
+        <div className="min-h-screen bg-gray-300 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-gray-500">
+          <div className="flex mx-4 pt-7 w-fit">
+            <Select
+              label="Select Type"
+              color="gray"
+              onChange={handleTypeFilter}
+              className="capitalize"
             >
-              All Types
-            </Option>
-            {types.map((type) => (
               <Option
-                key={type.name}
-                value={type.name}
+                value=""
                 className={`capitalize ${
-                  selectedType === type.name ? 'bg-blue-500 text-white' : ''
+                  selectedType === '' ? 'bg-blue-500 text-white' : ''
                 }`}
               >
-                {type.name}
+                All Types
               </Option>
-            ))}
-          </Select>
-        </div>
-
-        <div className="bg-gray-300">
-          <div className="pt-4 mx-1 sm:mx-4">
-            <Card
-              pokemon={pokeData}
-              loading={loading}
-              infoPokemon={handleInfoPokemon}
-            />
+              {types.map((type) => (
+                <Option
+                  key={type.name}
+                  value={type.name}
+                  className={`capitalize ${
+                    selectedType === type.name ? 'bg-blue-500 text-white' : ''
+                  }`}
+                >
+                  {type.name}
+                </Option>
+              ))}
+            </Select>
           </div>
 
-          {selectedType ? (
-            <div className="flex justify-center py-2 sm:py-4 px-2 sm:px-3 lg:px-8 text-[9px] sm:text-sm lg:text-lg gap-3 text-center text-gray-900 font-semibold items-center">
-              <Button
-                size="sm"
-                color="gray"
-                onClick={() => handlePageChange(null, filteredPage - 1, true)}
-                disabled={filteredPage === 1}
-              >
-                <IoChevronBack className="w-4 h-4" />
-              </Button>
-
-              <span className="font-poppins font-bold text-gray-950 text-[9px] sm:text-sm lg:text-lg">
-                {filteredPage} of {totalFilteredPages}
-              </span>
-
-              <Button
-                size="sm"
-                color="gray"
-                onClick={() => handlePageChange(null, filteredPage + 1, true)}
-                disabled={filteredPage === totalFilteredPages}
-              >
-                <IoChevronForward className="w-4 h-4" />
-              </Button>
+          <div className="bg-gray-300">
+            <div className="pt-4 mx-1 sm:mx-4">
+              <Card pokemon={pokeData} infoPokemon={handleInfoPokemon} />
             </div>
-          ) : (
-            <div className="flex justify-center py-2 sm:py-4 px-2 sm:px-3 lg:px-8 text-[9px] sm:text-sm lg:text-lg gap-3 text-center text-gray-900 font-semibold items-center">
-              <Button
-                size="sm"
-                color="gray"
-                onClick={() => handlePageChange(prevUrl, currentPage - 1)}
-                disabled={!prevUrl}
-              >
-                <IoChevronBack className="w-4 h-4" />
-              </Button>
 
-              <span className="font-poppins font-bold text-gray-950 text-[9px] sm:text-sm lg:text-lg">
-                {currentPage} of {totalPages}
-              </span>
+            {selectedType ? (
+              <div className="flex justify-center py-2 sm:py-4 px-2 sm:px-3 lg:px-8 text-[9px] sm:text-sm lg:text-lg gap-3 text-center text-gray-900 font-semibold items-center">
+                <Button
+                  size="sm"
+                  color="gray"
+                  onClick={() => handlePageChange(null, filteredPage - 1, true)}
+                  disabled={filteredPage === 1}
+                >
+                  <IoChevronBack className="w-4 h-4" />
+                </Button>
 
-              <Button
-                size="sm"
-                color="gray"
-                onClick={() => handlePageChange(nextUrl, currentPage + 1)}
-                disabled={!nextUrl}
-              >
-                <IoChevronForward className="w-4 h-4" />
-              </Button>
-            </div>
-          )}
+                <span className="font-poppins font-bold text-gray-950 text-[9px] sm:text-sm lg:text-lg">
+                  {filteredPage} of {totalFilteredPages}
+                </span>
+
+                <Button
+                  size="sm"
+                  color="gray"
+                  onClick={() => handlePageChange(null, filteredPage + 1, true)}
+                  disabled={filteredPage === totalFilteredPages}
+                >
+                  <IoChevronForward className="w-4 h-4" />
+                </Button>
+              </div>
+            ) : (
+              <div className="flex justify-center py-2 sm:py-4 px-2 sm:px-3 lg:px-8 text-[9px] sm:text-sm lg:text-lg gap-3 text-center text-gray-900 font-semibold items-center">
+                <Button
+                  size="sm"
+                  color="gray"
+                  onClick={() => handlePageChange(prevUrl, currentPage - 1)}
+                  disabled={!prevUrl}
+                >
+                  <IoChevronBack className="w-4 h-4" />
+                </Button>
+
+                <span className="font-poppins font-bold text-gray-950 text-[9px] sm:text-sm lg:text-lg">
+                  {currentPage} of {totalPages}
+                </span>
+
+                <Button
+                  size="sm"
+                  color="gray"
+                  onClick={() => handlePageChange(nextUrl, currentPage + 1)}
+                  disabled={!nextUrl}
+                >
+                  <IoChevronForward className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
       <Pokeinfo
         data={pokeDex}
         openModal={openModal}
