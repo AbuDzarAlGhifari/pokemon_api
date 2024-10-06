@@ -48,9 +48,9 @@ const Pokeinfo = ({ data, openModal, setOpenModal }) => {
   };
 
   const getStatColor = (stat) => {
-    if (stat <= 50) return 'to-red-400';
-    if (stat <= 100) return 'to-green-400';
-    return 'to-blue-400';
+    if (stat <= 50) return 'to-red-500';
+    if (stat <= 100) return 'to-green-500';
+    return 'to-blue-500';
   };
 
   const { id, name, height, weight, types = [], stats = [], sprites } = data;
@@ -100,6 +100,7 @@ const Pokeinfo = ({ data, openModal, setOpenModal }) => {
               </span>
             ))}
           </div>
+
           <div
             className="flex items-center justify-center gap-2 pb-3 font-bold"
             style={{ color: darkenColor(bgColors[id]) }}
@@ -118,9 +119,9 @@ const Pokeinfo = ({ data, openModal, setOpenModal }) => {
                 >
                   {stat.stat.name}
                 </p>
-                <div className="relative h-3 mx-1 overflow-hidden bg-gray-400 rounded-full sm:h-3.5 sm:mx-8">
+                <div className="relative h-3 mx-1 overflow-hidden bg-gray-400 rounded-sm sm:h-3.5 sm:mx-8">
                   <div
-                    className={`h-full rounded-full bg-gradient-to-r from-gray-400  ${getStatColor(
+                    className={`h-full rounded-sm bg-gradient-to-r from-gray-500  ${getStatColor(
                       stat.base_stat
                     )}`}
                     style={{ width: `${(stat.base_stat / 255) * 100}%` }}

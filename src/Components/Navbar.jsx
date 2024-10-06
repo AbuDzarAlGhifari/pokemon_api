@@ -13,7 +13,7 @@ const Navbar = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const debouncedSearchTerm = useDebounce(searchTerm, 350);
-  const suggestionsRef = useRef(null); // Create a ref for the suggestions list
+  const suggestionsRef = useRef(null);
 
   useEffect(() => {
     if (debouncedSearchTerm) {
@@ -77,10 +77,8 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    // Add click event listener
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      // Clean up the event listener on component unmount
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
