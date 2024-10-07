@@ -78,3 +78,21 @@ export const getPokemonDetails = async (id) => {
     throw new Error('Error fetching Pokémon details: ' + error.message);
   }
 };
+
+export const getTypeWeaknesses = async (types) => {
+  const weaknesses = new Set(); // Menggunakan set agar tidak ada duplikasi
+  try {
+    for (let type of types) {
+      const { data } = await axios.get(
+        `https://pokeapi.co/api/v2/type/${type.type.name}/`
+      );
+      data.damage_relations.double_damage_from.forEach((weakness) => {
+        weaknesses.add(weakness.name);
+      });
+    }
+    return [...weaknesses]; // Ubah menjadi array untuk kemudahan
+  } catch (error) {
+    console.error('Error fetching weaknesses:', error);
+    return [];
+  }
+};
