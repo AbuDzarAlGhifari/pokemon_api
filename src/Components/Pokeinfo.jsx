@@ -106,7 +106,7 @@ const Pokeinfo = ({ data, openModal, setOpenModal }) => {
         </div>
         <div className="col-span-7 px-2 py-2 text-xs rounded-md sm:py-4 sm:px-0 sm:col-span-6 bg-opacity-40 bg-gray-50 sm:text-lg font-poppins">
           <h2
-            className="py-2 text-lg font-extrabold text-center font-poppins"
+            className="py-2 text-lg font-extrabold text-center capitalize font-poppins"
             style={{ color: darkenColor(bgColors[id]) }}
           >
             {name}

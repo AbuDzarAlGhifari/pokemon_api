@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getPokemonDetails, getTypeWeaknesses } from '../services/api';
+import { getPokemonDetails } from '../services/api';
 import { Spinner } from '@material-tailwind/react';
 import typeColors from '../services/data';
 import ColorThief from 'colorthief';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { GiBorderedShield } from 'react-icons/gi';
-import { FaHeart, FaShieldAlt } from 'react-icons/fa';
+import { FaHeart, FaLongArrowAltRight, FaShieldAlt } from 'react-icons/fa';
 import { RiSwordFill } from 'react-icons/ri';
 import { SiCodemagic } from 'react-icons/si';
 import { IoTimer } from 'react-icons/io5';
@@ -19,7 +19,6 @@ const PokemonDetail = () => {
   const [loading, setLoading] = useState(true);
   const [bgColors, setBgColors] = useState({});
   const colorThief = useRef(new ColorThief());
-  const [weaknesses, setWeaknesses] = useState([]);
   const navigate = useNavigate();
 
   const handleImageLoad = (img, pokeId) => {
@@ -73,25 +72,6 @@ const PokemonDetail = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { pokemon, evolutionChain } = await getPokemonDetails(id);
-        setPokemon(pokemon);
-        setEvolutionChain(evolutionChain);
-
-        const weaknessesData = await getTypeWeaknesses(pokemon.types);
-        setWeaknesses(weaknessesData);
-      } catch (error) {
-        console.error(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [id]);
-
   const extractEvolutionChainData = (evolutionChain) => {
     if (!evolutionChain || !evolutionChain.chain) {
       return [];
@@ -101,9 +81,15 @@ const PokemonDetail = () => {
     let currentEvolution = evolutionChain.chain;
 
     while (currentEvolution) {
+      const speciesId = currentEvolution.species.url.split('/').slice(-2)[0];
+      const speciesName = currentEvolution.species.name;
+
+      const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${speciesId}.png`;
+
       evolutionData.push({
-        speciesId: currentEvolution.species.url.split('/').slice(-2)[0],
-        speciesName: currentEvolution.species.name,
+        speciesId,
+        speciesName,
+        imageUrl,
       });
 
       currentEvolution = currentEvolution.evolves_to[0];
@@ -192,7 +178,7 @@ const PokemonDetail = () => {
 
         <div className="px-1 py-2 text-sm rounded-md sm:col-span-6 col-span-full sm:py-4 bg-opacity-40 bg-gray-50 sm:text-xl font-poppins">
           <h2
-            className="py-2 font-extrabold text-center font-poppins"
+            className="py-2 font-extrabold text-center capitalize font-poppins"
             style={{ color: darkenColor(bgColors[pokemonId]) }}
           >
             {name}
@@ -294,35 +280,28 @@ const PokemonDetail = () => {
           </h2>
           <div className="flex flex-wrap justify-center gap-2 mx-2 sm:mx-3 lg:mx-4">
             {evolutionChainData.map((evolution, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <p className="text-sm italic font-bold text-gray-900 sm:text-lg lg:text-xl font-poppins">
-                  #{evolution.speciesName}
-                </p>
+              <div key={index} className="flex items-center">
+                <div className="flex flex-col items-center">
+                  <img
+                    src={evolution.imageUrl}
+                    alt={evolution.speciesName}
+                    className="object-contain w-20 h-20 sm:w-24 sm:h-24"
+                  />
+                  <p
+                    className="text-sm italic font-bold text-gray-900 sm:text-lg lg:text-xl font-poppins"
+                    style={{ color: darkenColor(bgColors[pokemonId]) }}
+                  >
+                    {evolution.speciesName}
+                  </p>
+                </div>
+                {index < evolutionChainData.length - 1 && (
+                  <FaLongArrowAltRight
+                    className="mx-2 text-2xl sm:text-3xl"
+                    style={{ color: darkenColor(bgColors[pokemonId]) }}
+                  />
+                )}
               </div>
             ))}
-          </div>
-
-          <div className="mt-4">
-            <h2
-              className="py-2 text-lg font-extrabold text-center font-poppins"
-              style={{ color: darkenColor(bgColors[pokemonId]) }}
-            >
-              Weaknesses
-            </h2>
-            <div className="flex flex-wrap justify-center gap-2 mx-2 sm:mx-3 lg:mx-4">
-              {weaknesses.length > 0 ? (
-                weaknesses.map((weakness, index) => (
-                  <span
-                    key={index}
-                    className="px-2 py-1 text-sm font-medium text-white bg-red-500 rounded-lg sm:text-md"
-                  >
-                    {weakness}
-                  </span>
-                ))
-              ) : (
-                <p className="italic text-gray-700">No weaknesses found</p>
-              )}
-            </div>
           </div>
         </div>
       </div>
