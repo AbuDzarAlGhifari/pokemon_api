@@ -121,7 +121,7 @@ const Home = () => {
           <Spinner className="w-16 h-16 text-gray-900/50" />
         </div>
       ) : (
-        <div className="min-h-screen bg-gray-300 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-gray-500">
+        <div className="mx-auto max-w-7xl">
           <div className="flex mx-4 pt-7 w-fit">
             <Select
               label="Select Type"

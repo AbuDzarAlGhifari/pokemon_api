@@ -64,9 +64,12 @@ export const getPokemonDetails = async (id) => {
       speciesResponse.data.evolution_chain.url
     );
 
+    const generation = speciesResponse.data.generation.name;
+
     return {
       pokemon: response.data,
       evolutionChain: evolutionChainResponse.data,
+      generation,
     };
   } catch (error) {
     throw new Error('Error fetching Pokémon details: ' + error.message);

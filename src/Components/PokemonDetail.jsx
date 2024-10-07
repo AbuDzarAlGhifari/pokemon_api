@@ -16,6 +16,7 @@ const PokemonDetail = () => {
   const { id } = useParams();
   const [pokemon, setPokemon] = useState(null);
   const [evolutionChain, setEvolutionChain] = useState(null);
+  const [generation, setGeneration] = useState('');
   const [loading, setLoading] = useState(true);
   const [bgColors, setBgColors] = useState({});
   const colorThief = useRef(new ColorThief());
@@ -101,9 +102,12 @@ const PokemonDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { pokemon, evolutionChain } = await getPokemonDetails(id);
+        const { pokemon, evolutionChain, generation } = await getPokemonDetails(
+          id
+        );
         setPokemon(pokemon);
         setEvolutionChain(evolutionChain);
+        setGeneration(generation);
       } catch (error) {
         console.error(error.message);
       } finally {
@@ -153,7 +157,7 @@ const PokemonDetail = () => {
   const evolutionChainData = extractEvolutionChainData(evolutionChain);
 
   return (
-    <div className="min-h-screen py-4 bg-gray-200">
+    <div className="py-4 mx-auto max-w-7xl">
       <h1
         className="flex justify-end mx-3 text-sm italic font-extrabold text-gray-600 underline cursor-pointer sm:mx-4 lg:mx-6 sm:text-lg lg:text-xl font-poppins hover:text-gray-900"
         onClick={() => navigate(-1)}
@@ -215,6 +219,15 @@ const PokemonDetail = () => {
             <h1 className="text-sm sm:text-lg">Height: {height}</h1>
             <span className="mx-2">|</span>
             <h1 className="text-sm sm:text-lg">Weight: {weight}</h1>
+          </div>
+
+          <div className="text-center">
+            <h3
+              className="py-2 font-extrabold text-center capitalize font-poppins"
+              style={{ color: darkenColor(bgColors[pokemonId]) }}
+            >
+              Generation: {generation}
+            </h3>
           </div>
 
           <div className="flex flex-col font-bold font-poppins">
@@ -285,7 +298,7 @@ const PokemonDetail = () => {
                   <img
                     src={evolution.imageUrl}
                     alt={evolution.speciesName}
-                    className="object-contain w-20 h-20 sm:w-24 sm:h-24"
+                    className="object-contain w-16 h-16 sm:w-28 sm:h-28"
                   />
                   <p
                     className="text-sm italic font-bold text-gray-900 sm:text-lg lg:text-xl font-poppins"
@@ -302,6 +315,35 @@ const PokemonDetail = () => {
                 )}
               </div>
             ))}
+          </div>
+
+          <h1
+            className="mt-5 text-lg font-extrabold text-center font-poppins"
+            style={{ color: darkenColor(bgColors[pokemonId]) }}
+          >
+            Other Sprites
+          </h1>
+          <div className="flex justify-center w-full gap-6">
+            <img
+              src={sprites?.front_default}
+              alt={`${name} front default`}
+              className="object-contain w-20 h-20"
+            />
+            <img
+              src={sprites?.back_default}
+              alt={`${name} back default`}
+              className="object-contain w-20 h-20"
+            />
+            <img
+              src={sprites?.front_shiny}
+              alt={`${name} front shiny`}
+              className="object-contain w-20 h-20"
+            />
+            <img
+              src={sprites?.back_shiny}
+              alt={`${name} back shiny`}
+              className="object-contain w-20 h-20"
+            />
           </div>
         </div>
       </div>

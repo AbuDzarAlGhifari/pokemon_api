@@ -23,9 +23,30 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+
+    <style>
+      /* width */
+      ::-webkit-scrollbar {
+        background: rgb(66, 66, 66);
+        width: 7px;
+      }
+
+      /* Track */
+      ::-webkit-scrollbar-track {
+        background: rgb(0, 0, 0);
+        border-radius: 10px;
+      }
+
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+        background: rgb(72, 76, 78);
+        border-radius: 8px;
+        box-shadow: 0 0 5px rgb(8, 47, 73), 0 0 10px rgb(8, 47, 73);
+      }
+    </style>
     <title>ABpoke</title>
   </head>
-  <body class="scrollbar-thin scrollbar-thumb-orange-800 scrollbar-track-orange-500">
+  <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--

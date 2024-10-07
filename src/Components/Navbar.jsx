@@ -84,8 +84,8 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className="px-4 py-4 bg-gray-900 lg:px-6">
-      <div className="container items-center justify-between mx-auto sm:flex">
+    <nav className="px-2 py-2 bg-gray-900 sm:px-4 sm:py-4 lg:px-6">
+      <div className="items-center justify-between mx-auto max-w-7xl sm:flex">
         <Link to="/" className="flex items-center justify-center text-center">
           <p className="text-xl italic font-semibold text-center text-gray-100 exp sm:text-left font-poppins sm:text-2xl lg:text-2xl">
             <span className="font-extrabold text-gray-500 text-x sm:text-2xl lg:text-3xl">
