@@ -8,7 +8,6 @@ import {
   fetchAllPokemon,
   fetchAllTypes,
   fetchPokemonByType,
-  fetchPokemonDetails,
 } from '../services/api';
 
 const Home = () => {
@@ -83,7 +82,7 @@ const Home = () => {
   const getPokemon = async (res) => {
     const newPokeData = await Promise.all(
       res.map(async (item) => {
-        const result = await fetchPokemonDetails(item.url);
+        const result = await fetchAllPokemon(item.url);
         return result;
       })
     );

@@ -7,9 +7,13 @@ import {
   DialogHeader,
 } from '@material-tailwind/react';
 import { Link } from 'react-router-dom';
-import { IoClose } from 'react-icons/io5';
+import { IoClose, IoTimer } from 'react-icons/io5';
 import typeColors from '../services/data';
 import ColorThief from 'colorthief';
+import { FaHeart, FaShieldAlt } from 'react-icons/fa';
+import { RiSwordFill } from 'react-icons/ri';
+import { SiCodemagic } from 'react-icons/si';
+import { GiBorderedShield } from 'react-icons/gi';
 
 const Pokeinfo = ({ data, openModal, setOpenModal }) => {
   const [bgColors, setBgColors] = useState({});
@@ -53,6 +57,25 @@ const Pokeinfo = ({ data, openModal, setOpenModal }) => {
     return 'to-blue-500';
   };
 
+  const getStatIcon = (statName) => {
+    switch (statName) {
+      case 'hp':
+        return <FaHeart className="inline-block mr-1" />;
+      case 'attack':
+        return <RiSwordFill className="inline-block mr-1" />;
+      case 'defense':
+        return <FaShieldAlt className="inline-block mr-1" />;
+      case 'special-attack':
+        return <SiCodemagic className="inline-block mr-1" />;
+      case 'special-defense':
+        return <GiBorderedShield className="inline-block mr-1" />;
+      case 'speed':
+        return <IoTimer className="inline-block mr-1" />;
+      default:
+        return null;
+    }
+  };
+
   const { id, name, height, weight, types = [], stats = [], sprites } = data;
 
   return (
@@ -71,7 +94,7 @@ const Pokeinfo = ({ data, openModal, setOpenModal }) => {
         </button>
       </DialogHeader>
       <DialogBody className="grid grid-cols-12">
-        <div className="col-span-6">
+        <div className="col-span-5 sm:col-span-6">
           <div className="flex items-center justify-center h-full">
             <img
               src={sprites?.other['official-artwork']?.front_default}
@@ -81,9 +104,9 @@ const Pokeinfo = ({ data, openModal, setOpenModal }) => {
             />
           </div>
         </div>
-        <div className="col-span-6 py-4 text-xs rounded-md bg-opacity-40 bg-gray-50 sm:text-lg font-poppins text-gray-950">
+        <div className="col-span-7 px-2 py-2 text-xs rounded-md sm:py-4 sm:px-0 sm:col-span-6 bg-opacity-40 bg-gray-50 sm:text-lg font-poppins">
           <h2
-            className="py-2 text-lg font-extrabold text-center font-poppins"
+            className="py-2 text-lg font-extrabold text-center capitalize font-poppins"
             style={{ color: darkenColor(bgColors[id]) }}
           >
             {name}
@@ -117,7 +140,7 @@ const Pokeinfo = ({ data, openModal, setOpenModal }) => {
                   className="mx-1 text-sm capitalize sm:mx-8 sm:text-md"
                   style={{ color: darkenColor(bgColors[id]) }}
                 >
-                  {stat.stat.name}
+                  {getStatIcon(stat.stat.name)} {stat.stat.name}
                 </p>
                 <div className="relative h-3 mx-1 overflow-hidden bg-gray-400 rounded-sm sm:h-3.5 sm:mx-8">
                   <div

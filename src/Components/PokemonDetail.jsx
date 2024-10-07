@@ -1,14 +1,76 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getPokemonDetails } from '../services/api';
 import { Spinner } from '@material-tailwind/react';
+import typeColors from '../services/data';
+import ColorThief from 'colorthief';
+import { IoMdArrowRoundBack } from 'react-icons/io';
+import { GiBorderedShield } from 'react-icons/gi';
+import { FaHeart, FaLongArrowAltRight, FaShieldAlt } from 'react-icons/fa';
+import { RiSwordFill } from 'react-icons/ri';
+import { SiCodemagic } from 'react-icons/si';
+import { IoTimer } from 'react-icons/io5';
+import { MdCatchingPokemon } from 'react-icons/md';
 
 const PokemonDetail = () => {
   const { id } = useParams();
   const [pokemon, setPokemon] = useState(null);
   const [evolutionChain, setEvolutionChain] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [bgColors, setBgColors] = useState({});
+  const colorThief = useRef(new ColorThief());
   const navigate = useNavigate();
+
+  const handleImageLoad = (img, pokeId) => {
+    try {
+      if (img.complete && img.naturalHeight !== 0) {
+        const color = colorThief.current.getColor(img);
+        setBgColors((prevColors) => ({
+          ...prevColors,
+          [pokeId]: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.9)`,
+        }));
+      }
+    } catch (error) {
+      console.error('Error extracting color:', error);
+    }
+  };
+
+  const darkenColor = (color) => {
+    if (!color) return 'rgb(128, 128, 128)';
+    const rgb = color.match(/\d+/g).map(Number);
+    const [r, g, b] = rgb;
+    return `rgb(${Math.max(r - 50, 0)}, ${Math.max(g - 50, 0)}, ${Math.max(
+      b - 50,
+      0
+    )})`;
+  };
+
+  const getStatColor = (stat) => {
+    if (stat <= 50) return 'to-red-500';
+    if (stat <= 100) return 'to-green-500';
+    return 'to-blue-500';
+  };
+
+  const getStatIcon = (statName) => {
+    switch (statName) {
+      case 'hp':
+        return <FaHeart className="inline-block mr-1" />;
+      case 'attack':
+        return <RiSwordFill className="inline-block mr-1" />;
+      case 'defense':
+        return <FaShieldAlt className="inline-block mr-1" />;
+      case 'special-attack':
+        return <SiCodemagic className="inline-block mr-1" />;
+      case 'special-defense':
+        return <GiBorderedShield className="inline-block mr-1" />;
+      case 'speed':
+        return <IoTimer className="inline-block mr-1" />;
+      case 'base-experience':
+        return <MdCatchingPokemon className="inline-block mr-1" />;
+      default:
+        return null;
+    }
+  };
 
   const extractEvolutionChainData = (evolutionChain) => {
     if (!evolutionChain || !evolutionChain.chain) {
@@ -19,9 +81,15 @@ const PokemonDetail = () => {
     let currentEvolution = evolutionChain.chain;
 
     while (currentEvolution) {
+      const speciesId = currentEvolution.species.url.split('/').slice(-2)[0];
+      const speciesName = currentEvolution.species.name;
+
+      const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${speciesId}.png`;
+
       evolutionData.push({
-        speciesId: currentEvolution.species.url.split('/').slice(-2)[0],
-        speciesName: currentEvolution.species.name,
+        speciesId,
+        speciesName,
+        imageUrl,
       });
 
       currentEvolution = currentEvolution.evolves_to[0];
@@ -56,13 +124,22 @@ const PokemonDetail = () => {
 
   if (!pokemon || !evolutionChain) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-200">
-        <h1>Error loading Pokémon details.</h1>
+      <div className="min-h-screen py-4 bg-gray-200">
+        <div
+          className="flex justify-end mx-3 text-sm italic font-extrabold text-gray-600 underline cursor-pointer sm:mx-4 lg:mx-6 sm:text-lg lg:text-xl font-poppins hover:text-gray-900"
+          onClick={() => navigate(-1)}
+        >
+          <IoMdArrowRoundBack className="w-5 h-5 sm:w-10 sm:h-10" />
+        </div>
+        <div className="flex items-center justify-center text-xl font-extrabold h-36 font-poppins">
+          <h1>No Pokémon details ....</h1>
+        </div>
       </div>
     );
   }
 
   const {
+    id: pokemonId,
     name,
     height,
     weight,
@@ -81,88 +158,150 @@ const PokemonDetail = () => {
         className="flex justify-end mx-3 text-sm italic font-extrabold text-gray-600 underline cursor-pointer sm:mx-4 lg:mx-6 sm:text-lg lg:text-xl font-poppins hover:text-gray-900"
         onClick={() => navigate(-1)}
       >
-        Back
+        <IoMdArrowRoundBack className="w-5 h-5 sm:w-10 sm:h-10" />
       </h1>
-      <div className="mx-2 mt-2 bg-gray-600 border-2 border-gray-900 rounded-md sm:mx-4 lg:mx-6 bg-opacity-40">
-        <h2 className="py-2 mb-3 text-lg font-extrabold text-center text-gray-900 bg-gray-500 border-b-2 border-gray-900 sm:text-xl lg:text-2xl font-poppins sm:mb-4 lg:mb-5 bg-opacity-60 rounded-t-md">
-          {name}
-        </h2>
-        <div className="flex items-center justify-center">
-          <img
-            src={sprites?.other['official-artwork']?.front_default}
-            alt={name}
-          />
+
+      <div
+        className="grid grid-cols-12 p-4 mx-2 mt-2 rounded-md sm:mx-4 lg:mx-6 bg-opacity-40"
+        style={{ backgroundColor: bgColors[pokemonId] || 'gray' }}
+      >
+        <div className="sm:col-span-6 col-span-full">
+          <div className="flex items-center justify-center">
+            <img
+              src={sprites?.other['official-artwork']?.front_default}
+              alt={name}
+              crossOrigin="anonymous"
+              onLoad={(e) => handleImageLoad(e.target, id)}
+            />
+          </div>
         </div>
-        <div className="py-2 text-xs text-gray-900 bg-gray-500 border-t-2 border-gray-900 bg-opacity-60 rounded-b-md sm:text-lg lg:text-2xl font-poppins">
-          <div className="flex items-center justify-center gap-1">
+
+        <div className="px-1 py-2 text-sm rounded-md sm:col-span-6 col-span-full sm:py-4 bg-opacity-40 bg-gray-50 sm:text-xl font-poppins">
+          <h2
+            className="py-2 font-extrabold text-center capitalize font-poppins"
+            style={{ color: darkenColor(bgColors[pokemonId]) }}
+          >
+            {name}
+          </h2>
+
+          <div className="flex items-center justify-center gap-1 my-1">
             {types.map((type) => (
-              <div
+              <span
                 key={type.type.name}
-                className="p-1 px-2 text-gray-200 bg-gray-900 rounded-lg"
+                className={`px-2 py-1 mx-1 font-poppins font-medium rounded-lg text-sm sm:text-lg ${
+                  typeColors[type.type.name] || 'bg-gray-400'
+                }`}
               >
-                <p>{type.type.name}</p>
-              </div>
+                {type.type.name}
+              </span>
             ))}
           </div>
-          <div className="flex items-center justify-center gap-1 pt-1 font-bold">
-            <h1>Height: {height},</h1>
-            <h1>Weight: {weight}</h1>
-          </div>
-          <div className="flex items-center justify-center gap-1 pt-2">
+
+          <div className="flex items-center justify-center gap-1 pt-2 my-1">
             {abilities.map((ability) => (
               <div
                 key={ability.ability.name}
-                className="p-1 px-2 text-gray-200 bg-gray-700 rounded-lg"
+                className="px-2 py-1 mx-1 text-sm font-medium text-gray-200 bg-gray-700 rounded-lg sm:text-lg"
               >
                 <p>{ability.ability.name}</p>
               </div>
             ))}
           </div>
+
+          <div
+            className="flex items-center justify-center gap-2 pb-3 font-bold"
+            style={{ color: darkenColor(bgColors[pokemonId]) }}
+          >
+            <h1 className="text-sm sm:text-lg">Height: {height}</h1>
+            <span className="mx-2">|</span>
+            <h1 className="text-sm sm:text-lg">Weight: {weight}</h1>
+          </div>
+
+          <div className="flex flex-col font-bold font-poppins">
+            {base_experience !== undefined && (
+              <>
+                <p
+                  className="mx-1 text-sm capitalize sm:mx-8 sm:text-lg"
+                  style={{ color: darkenColor(bgColors[pokemonId]) }}
+                >
+                  {getStatIcon('base-experience')} Base Experience
+                </p>
+                <div className="relative h-3.5 mx-1 overflow-hidden bg-gray-400 rounded-sm sm:h-5 sm:mx-8">
+                  <div
+                    className={`h-full rounded-sm bg-gradient-to-r from-gray-500 ${getStatColor(
+                      base_experience
+                    )}`}
+                    style={{ width: `${(base_experience / 555) * 100}%` }}
+                  ></div>
+                  <p
+                    className="absolute top-0 right-0 mr-1 text-xs sm:text-sm"
+                    style={{ color: darkenColor(bgColors[pokemonId]) }}
+                  >
+                    {base_experience} / 555
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+
           <div className="flex flex-col font-bold font-poppins">
             {stats.map((stat) => (
-              <div key={stat.stat.name}>
-                <p className="mx-1 text-sm text-left sm:mx-8 sm:text-lg">
-                  {stat.stat.name}
+              <div key={stat.stat.name} className="my-0.5">
+                <p
+                  className="mx-1 text-sm capitalize sm:mx-8 sm:text-lg"
+                  style={{ color: darkenColor(bgColors[pokemonId]) }}
+                >
+                  {getStatIcon(stat.stat.name)} {stat.stat.name}
                 </p>
-                <div className="relative h-3 mx-1 bg-gray-400 rounded-sm sm:h-5 sm:mx-8">
+                <div className="relative h-3.5 mx-1 overflow-hidden bg-gray-400 rounded-sm sm:h-5 sm:mx-8">
                   <div
-                    className="h-full bg-gray-700 rounded-sm"
+                    className={`h-full rounded-sm bg-gradient-to-r from-gray-500  ${getStatColor(
+                      stat.base_stat
+                    )}`}
                     style={{ width: `${(stat.base_stat / 255) * 100}%` }}
                   ></div>
-                  <p className="absolute top-0 right-0 mr-1 text-[9px] sm:text-sm text-gray-900">
+                  <p
+                    className="absolute top-0 right-0 mr-1 text-xs sm:text-sm"
+                    style={{ color: darkenColor(bgColors[pokemonId]) }}
+                  >
                     {stat.base_stat} / 255
                   </p>
                 </div>
               </div>
             ))}
-            <div className="flex flex-col">
-              <p className="mx-1 text-sm text-left sm:mx-8 sm:text-lg">
-                Base Experience
-              </p>
-              <div className="relative h-3 mx-1 bg-gray-400 rounded-sm sm:h-5 sm:mx-8">
-                <div
-                  className="h-full bg-gray-700 rounded-sm"
-                  style={{ width: `${(base_experience / 555) * 100}%` }}
-                ></div>
-                <p className="absolute top-0 right-0 mr-1 text-[9px] sm:text-sm text-gray-900">
-                  {base_experience} / 555
-                </p>
-              </div>
-            </div>
           </div>
-          <div className="mt-4">
-            <h2 className="mb-2 text-lg font-extrabold text-center text-gray-900 sm:text-xl lg:text-2xl font-poppins">
-              Evolution Chain
-            </h2>
-            <div className="flex flex-wrap justify-center gap-2 mx-2 sm:mx-3 lg:mx-4">
-              {evolutionChainData.map((evolution, index) => (
-                <div key={index} className="flex flex-col items-center">
-                  <p className="text-sm italic font-bold text-gray-900 sm:text-lg lg:text-xl font-poppins">
-                    #{evolution.speciesName}
+        </div>
+        <div className="py-4 mt-3 text-xs rounded-md col-span-full bg-opacity-40 bg-gray-50 sm:text-lg font-poppins">
+          <h2
+            className="py-2 text-lg font-extrabold text-center font-poppins"
+            style={{ color: darkenColor(bgColors[pokemonId]) }}
+          >
+            Evolution Chain
+          </h2>
+          <div className="flex flex-wrap justify-center gap-2 mx-2 sm:mx-3 lg:mx-4">
+            {evolutionChainData.map((evolution, index) => (
+              <div key={index} className="flex items-center">
+                <div className="flex flex-col items-center">
+                  <img
+                    src={evolution.imageUrl}
+                    alt={evolution.speciesName}
+                    className="object-contain w-20 h-20 sm:w-24 sm:h-24"
+                  />
+                  <p
+                    className="text-sm italic font-bold text-gray-900 sm:text-lg lg:text-xl font-poppins"
+                    style={{ color: darkenColor(bgColors[pokemonId]) }}
+                  >
+                    {evolution.speciesName}
                   </p>
                 </div>
-              ))}
-            </div>
+                {index < evolutionChainData.length - 1 && (
+                  <FaLongArrowAltRight
+                    className="mx-2 text-2xl sm:text-3xl"
+                    style={{ color: darkenColor(bgColors[pokemonId]) }}
+                  />
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </div>

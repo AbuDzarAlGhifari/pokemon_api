@@ -14,19 +14,13 @@ export const fetchPokemonByType = async (type) => {
   return response.data.pokemon.map((p) => p.pokemon);
 };
 
-// Fetch a single Pokemon's details
-export const fetchPokemonDetails = async (url) => {
-  const response = await axios.get(url);
-  return response.data;
-};
-
 // Fetch all available types of Pokemon
 export const fetchAllTypes = async () => {
   const response = await axios.get(`${BASEAPI_URL}/type`);
   return response.data.results;
 };
 
-// Fetch Random Pokemon
+// Fetch Random Pokemon [Landing Page]
 export const fetchPokemonData = async () => {
   const randomId = Math.floor(Math.random() * 898) + 1;
   const response = await fetch(`${BASEAPI_URL}/pokemon/${randomId}`);
