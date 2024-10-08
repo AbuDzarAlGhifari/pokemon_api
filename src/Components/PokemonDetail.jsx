@@ -323,7 +323,7 @@ const PokemonDetail = () => {
           >
             Other Sprites
           </h1>
-          <div className="flex justify-center w-full gap-6">
+          <div className="flex justify-center w-full gap-2 sm:gap-6">
             <img
               src={sprites?.front_default}
               alt={`${name} front default`}
