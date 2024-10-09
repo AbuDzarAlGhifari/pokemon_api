@@ -11,12 +11,14 @@ import { RiSwordFill } from 'react-icons/ri';
 import { SiCodemagic } from 'react-icons/si';
 import { IoTimer } from 'react-icons/io5';
 import { MdCatchingPokemon } from 'react-icons/md';
+import axios from 'axios';
 
 const PokemonDetail = () => {
   const { id } = useParams();
   const [pokemon, setPokemon] = useState(null);
   const [evolutionChain, setEvolutionChain] = useState(null);
   const [generation, setGeneration] = useState('');
+  const [alternateForms, setAlternateForms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [bgColors, setBgColors] = useState({});
   const colorThief = useRef(new ColorThief());
@@ -102,12 +104,25 @@ const PokemonDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { pokemon, evolutionChain, generation } = await getPokemonDetails(
-          id
-        );
+        const { pokemon, evolutionChain, generation, forms } =
+          await getPokemonDetails(id);
         setPokemon(pokemon);
         setEvolutionChain(evolutionChain);
         setGeneration(generation);
+
+        // Fetch details for alternate forms (like Mega or Gigantamax)
+        const formPromises = forms.map(async (form) => {
+          if (form.is_default) return null; // Skip default form
+          const formResponse = await axios.get(form.pokemon.url);
+          return {
+            name: form.pokemon.name,
+            imageUrl:
+              formResponse.data.sprites.other['official-artwork'].front_default,
+          };
+        });
+
+        const resolvedForms = await Promise.all(formPromises);
+        setAlternateForms(resolvedForms.filter(Boolean)); // Remove null values (default forms)
       } catch (error) {
         console.error(error.message);
       } finally {
@@ -285,12 +300,12 @@ const PokemonDetail = () => {
           </div>
         </div>
         <div className="py-4 mt-3 text-xs rounded-md col-span-full bg-opacity-40 bg-gray-50 sm:text-lg font-poppins">
-          <h2
-            className="py-2 text-lg font-extrabold text-center font-poppins"
+          <h1
+            className="py-2 text-2xl font-extrabold text-center font-poppins"
             style={{ color: darkenColor(bgColors[pokemonId]) }}
           >
             Evolution Chain
-          </h2>
+          </h1>
           <div className="flex flex-wrap justify-center gap-2 mx-2 sm:mx-3 lg:mx-4">
             {evolutionChainData.map((evolution, index) => (
               <div key={index} className="flex items-center">
@@ -301,7 +316,7 @@ const PokemonDetail = () => {
                     className="object-contain w-16 h-16 sm:w-28 sm:h-28"
                   />
                   <p
-                    className="text-sm italic font-bold text-gray-900 sm:text-lg lg:text-xl font-poppins"
+                    className="text-sm italic font-bold sm:text-lg lg:text-xl font-poppins"
                     style={{ color: darkenColor(bgColors[pokemonId]) }}
                   >
                     {evolution.speciesName}
@@ -317,33 +332,123 @@ const PokemonDetail = () => {
             ))}
           </div>
 
+          {alternateForms.length > 0 && (
+            <>
+              <h1
+                className="py-2 mt-4 text-2xl font-extrabold text-center font-poppins"
+                style={{ color: darkenColor(bgColors[pokemonId]) }}
+              >
+                Alternate Forms
+              </h1>
+              <div className="flex flex-wrap justify-center w-full gap-3 sm:gap-7">
+                {alternateForms.map((form, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col items-center justify-center"
+                  >
+                    <img
+                      src={form.imageUrl}
+                      alt={`${name} alternate form`}
+                      className="object-contain w-16 h-16 sm:w-28 sm:h-28"
+                    />
+                    <h1
+                      className="text-sm italic font-semibold text-center text-gray-900 sm:text-lg lg:text-xl font-poppins"
+                      style={{ color: darkenColor(bgColors[pokemonId]) }}
+                    >
+                      {form.name}
+                    </h1>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
           <h1
-            className="mt-5 text-lg font-extrabold text-center font-poppins"
+            className="py-2 mt-4 text-2xl font-extrabold text-center font-poppins"
             style={{ color: darkenColor(bgColors[pokemonId]) }}
           >
-            Other Sprites
+            Other Image
           </h1>
-          <div className="flex justify-center w-full gap-2 sm:gap-6">
-            <img
-              src={sprites?.front_default}
-              alt={`${name} front default`}
-              className="object-contain w-20 h-20"
-            />
-            <img
-              src={sprites?.back_default}
-              alt={`${name} back default`}
-              className="object-contain w-20 h-20"
-            />
-            <img
-              src={sprites?.front_shiny}
-              alt={`${name} front shiny`}
-              className="object-contain w-20 h-20"
-            />
-            <img
-              src={sprites?.back_shiny}
-              alt={`${name} back shiny`}
-              className="object-contain w-20 h-20"
-            />
+          <div className="flex flex-wrap justify-center w-full gap-3 sm:gap-7">
+            {sprites?.front_default && (
+              <div className="flex flex-col items-center justify-center">
+                <img
+                  src={sprites.front_default}
+                  alt={`${name} front default`}
+                  className="object-contain w-16 h-16 sm:w-28 sm:h-28"
+                />
+                <h1
+                  className="text-sm italic font-semibold text-center text-gray-900 sm:text-lg lg:text-xl font-poppins"
+                  style={{ color: darkenColor(bgColors[pokemonId]) }}
+                >
+                  default
+                </h1>
+              </div>
+            )}
+
+            {sprites?.other.dream_world.front_default && (
+              <div className="flex flex-col items-center justify-center">
+                <img
+                  src={sprites.other.dream_world.front_default}
+                  alt={`${name} dream world`}
+                  className="object-contain w-16 h-16 sm:w-28 sm:h-28"
+                />
+                <h1
+                  className="text-sm italic font-semibold text-center text-gray-900 sm:text-lg lg:text-xl font-poppins"
+                  style={{ color: darkenColor(bgColors[pokemonId]) }}
+                >
+                  Dream World
+                </h1>
+              </div>
+            )}
+
+            {sprites?.other['showdown']?.front_default && (
+              <div className="flex flex-col items-center justify-center">
+                <img
+                  src={sprites.other['showdown'].front_default}
+                  alt={`${name} showdown`}
+                  className="object-contain w-16 h-16 sm:w-28 sm:h-28"
+                />
+                <h1
+                  className="text-sm italic font-semibold text-center text-gray-900 sm:text-lg lg:text-xl font-poppins"
+                  style={{ color: darkenColor(bgColors[pokemonId]) }}
+                >
+                  Showdown
+                </h1>
+              </div>
+            )}
+
+            {sprites?.other['official-artwork']?.front_default && (
+              <div className="flex flex-col items-center justify-center">
+                <img
+                  src={sprites.other['official-artwork'].front_default}
+                  alt={`${name} official artwork`}
+                  className="object-contain w-16 h-16 sm:w-28 sm:h-28"
+                />
+                <h1
+                  className="text-sm italic font-semibold text-center text-gray-900 sm:text-lg lg:text-xl font-poppins"
+                  style={{ color: darkenColor(bgColors[pokemonId]) }}
+                >
+                  Official Artwork
+                </h1>
+              </div>
+            )}
+
+            {sprites?.other['home']?.front_default && (
+              <div className="flex flex-col items-center justify-center">
+                <img
+                  src={sprites.other['home'].front_default}
+                  alt={`${name} home`}
+                  className="object-contain w-16 h-16 sm:w-28 sm:h-28"
+                />
+                <h1
+                  className="text-sm italic font-semibold text-center text-gray-900 sm:text-lg lg:text-xl font-poppins"
+                  style={{ color: darkenColor(bgColors[pokemonId]) }}
+                >
+                  Home
+                </h1>
+              </div>
+            )}
           </div>
         </div>
       </div>
