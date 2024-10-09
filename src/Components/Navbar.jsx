@@ -94,7 +94,22 @@ const Navbar = () => {
             pokemon
           </p>
         </Link>
+
         <div className="flex items-center mt-3 sm:mt-0">
+          <div className="flex gap-4 mr-3 text-xl text-gray-200">
+            <Link
+              to="/home"
+              className="cursor-pointer hover:text-blue-gray-700"
+            >
+              PokeDex
+            </Link>
+            <Link
+              to="/game"
+              className="cursor-pointer hover:text-blue-gray-700"
+            >
+              Game
+            </Link>
+          </div>
           <div
             className="w-full max-w-sm min-w-[200px] relative"
             ref={suggestionsRef}

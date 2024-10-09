@@ -300,68 +300,72 @@ const PokemonDetail = () => {
           </div>
         </div>
         <div className="py-4 mt-3 text-xs rounded-md col-span-full bg-opacity-40 bg-gray-50 sm:text-lg font-poppins">
-          <h1
-            className="py-2 text-2xl font-extrabold text-center font-poppins"
-            style={{ color: darkenColor(bgColors[pokemonId]) }}
-          >
-            Evolution Chain
-          </h1>
-          <div className="flex flex-wrap justify-center gap-2 mx-2 sm:mx-3 lg:mx-4">
-            {evolutionChainData.map((evolution, index) => (
-              <div key={index} className="flex items-center">
-                <div className="flex flex-col items-center">
-                  <img
-                    src={evolution.imageUrl}
-                    alt={evolution.speciesName}
-                    className="object-contain w-16 h-16 sm:w-28 sm:h-28"
-                  />
-                  <p
-                    className="text-sm italic font-bold sm:text-lg lg:text-xl font-poppins"
-                    style={{ color: darkenColor(bgColors[pokemonId]) }}
-                  >
-                    {evolution.speciesName}
-                  </p>
-                </div>
-                {index < evolutionChainData.length - 1 && (
-                  <FaLongArrowAltRight
-                    className="mx-2 text-2xl sm:text-3xl"
-                    style={{ color: darkenColor(bgColors[pokemonId]) }}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-
-          {alternateForms.length > 0 && (
-            <>
+          <div className="items-center justify-center gap-6 sm:flex">
+            <div>
               <h1
                 className="py-2 mt-4 text-2xl font-extrabold text-center font-poppins"
                 style={{ color: darkenColor(bgColors[pokemonId]) }}
               >
-                Alternate Forms
+                Evolution Chain
               </h1>
-              <div className="flex flex-wrap justify-center w-full gap-3 sm:gap-7">
-                {alternateForms.map((form, index) => (
-                  <div
-                    key={index}
-                    className="flex flex-col items-center justify-center"
-                  >
-                    <img
-                      src={form.imageUrl}
-                      alt={`${name} alternate form`}
-                      className="object-contain w-16 h-16 sm:w-28 sm:h-28"
-                    />
-                    <h1
-                      className="text-sm italic font-semibold text-center text-gray-900 sm:text-lg lg:text-xl font-poppins"
-                      style={{ color: darkenColor(bgColors[pokemonId]) }}
-                    >
-                      {form.name}
-                    </h1>
+              <div className="flex flex-wrap justify-center gap-2 mx-2 sm:mx-3 lg:mx-4">
+                {evolutionChainData.map((evolution, index) => (
+                  <div key={index} className="flex items-center">
+                    <div className="flex flex-col items-center">
+                      <img
+                        src={evolution.imageUrl}
+                        alt={evolution.speciesName}
+                        className="object-contain w-16 h-16 sm:w-28 sm:h-28"
+                      />
+                      <p
+                        className="text-sm italic font-bold sm:text-lg lg:text-xl font-poppins"
+                        style={{ color: darkenColor(bgColors[pokemonId]) }}
+                      >
+                        {evolution.speciesName}
+                      </p>
+                    </div>
+                    {index < evolutionChainData.length - 1 && (
+                      <FaLongArrowAltRight
+                        className="mx-2 text-2xl sm:text-3xl"
+                        style={{ color: darkenColor(bgColors[pokemonId]) }}
+                      />
+                    )}
                   </div>
                 ))}
               </div>
-            </>
-          )}
+            </div>
+
+            {alternateForms.length > 0 && (
+              <div>
+                <h1
+                  className="py-2 mt-4 text-2xl font-extrabold text-center font-poppins"
+                  style={{ color: darkenColor(bgColors[pokemonId]) }}
+                >
+                  Alternate Forms
+                </h1>
+                <div className="flex flex-wrap justify-center gap-2 mx-2 sm:mx-3 lg:mx-4">
+                  {alternateForms.map((form, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col items-center justify-center"
+                    >
+                      <img
+                        src={form.imageUrl}
+                        alt={`${name} alternate form`}
+                        className="object-contain w-16 h-16 sm:w-28 sm:h-28"
+                      />
+                      <h1
+                        className="text-sm italic font-semibold text-center text-gray-900 sm:text-lg lg:text-xl font-poppins"
+                        style={{ color: darkenColor(bgColors[pokemonId]) }}
+                      >
+                        {form.name}
+                      </h1>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
 
           <h1
             className="py-2 mt-4 text-2xl font-extrabold text-center font-poppins"
