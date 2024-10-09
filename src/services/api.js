@@ -35,6 +35,7 @@ export const fetchPokemonData = async () => {
   return { imageUrl, statsData };
 };
 
+// Fetch all Pokémon for search functionality
 export const fetchAllPokemonSearch = async () => {
   try {
     const response = await axios.get(`${BASEAPI_URL}/pokemon?limit=10000`);
@@ -45,6 +46,7 @@ export const fetchAllPokemonSearch = async () => {
   }
 };
 
+// Fetch Pokemon details by name for search functionality
 export const fetchPokemonDetailsSearch = async (pokemonName) => {
   const response = await fetch(`${BASEAPI_URL}/pokemon/${pokemonName}`);
   const data = await response.json();
@@ -56,6 +58,8 @@ export const fetchPokemonDetailsSearch = async (pokemonName) => {
   };
 };
 
+// Fetch detailed Pokemon data, including species and evolution chain
+// Fetch detailed Pokemon data, including species, evolution chain, and forms
 export const getPokemonDetails = async (id) => {
   try {
     const response = await axios.get(`${BASEAPI_URL}/pokemon/${id}`);
@@ -65,11 +69,13 @@ export const getPokemonDetails = async (id) => {
     );
 
     const generation = speciesResponse.data.generation.name;
+    const forms = speciesResponse.data.varieties; // This contains alternate forms like Mega and Gmax
 
     return {
       pokemon: response.data,
       evolutionChain: evolutionChainResponse.data,
       generation,
+      forms, // Include alternate forms
     };
   } catch (error) {
     throw new Error('Error fetching Pokémon details: ' + error.message);
