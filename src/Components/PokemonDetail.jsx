@@ -19,10 +19,34 @@ const PokemonDetail = () => {
   const [evolutionChain, setEvolutionChain] = useState(null);
   const [generation, setGeneration] = useState('');
   const [alternateForms, setAlternateForms] = useState([]);
+  const [habitat, setHabitat] = useState('');
   const [loading, setLoading] = useState(true);
   const [bgColors, setBgColors] = useState({});
   const colorThief = useRef(new ColorThief());
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchHabitat = async () => {
+      try {
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+        const data = await response.json();
+
+        // Fetch habitat from species endpoint
+        const speciesResponse = await fetch(data.species.url);
+        const speciesData = await speciesResponse.json();
+        setHabitat(
+          speciesData.habitat ? speciesData.habitat.name : 'Unknown Habitat'
+        );
+      } catch (error) {
+        console.error('Error fetching habitat:', error);
+        setHabitat('Error fetching habitat');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHabitat();
+  }, [id]);
 
   const handleImageLoad = (img, pokeId) => {
     try {
@@ -167,6 +191,8 @@ const PokemonDetail = () => {
     base_experience,
     stats,
     sprites,
+    game_indices,
+    cries,
   } = pokemon;
 
   const evolutionChainData = extractEvolutionChainData(evolutionChain);
@@ -454,6 +480,136 @@ const PokemonDetail = () => {
               </div>
             )}
           </div>
+
+          <h1
+            className="py-2 mt-4 text-2xl font-extrabold text-center font-poppins"
+            style={{ color: darkenColor(bgColors[pokemonId]) }}
+          >
+            Version Images
+          </h1>
+          <table className="w-full border-collapse table-auto">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 text-left border">Game</th>
+                <th className="px-4 py-2 text-left border">Image</th>
+                <th className="px-4 py-2 text-left border">Region</th>
+                <th className="px-4 py-2 text-left border">Release Year</th>
+                <th className="px-4 py-2 text-left border">Game Description</th>
+                <th className="px-4 py-2 text-left border">Habitat</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(sprites?.versions || {}).map(
+                ([generation, versionData]) => {
+                  return Object.entries(versionData).map(
+                    ([version, images]) => {
+                      if (
+                        images.front_default ||
+                        (images.animated && images.animated.front_default)
+                      ) {
+                        let region = '';
+                        let releaseYear = '';
+                        let gameDescription = '';
+
+                        switch (generation) {
+                          case 'generation-i':
+                            region = 'Kanto';
+                            releaseYear = '1996';
+                            gameDescription =
+                              'The very first Pokémon games that introduced players to the world of Pokémon. Available in Red, Blue, and Yellow versions.';
+                            break;
+                          case 'generation-ii':
+                            region = 'Johto';
+                            releaseYear = '1999';
+                            gameDescription =
+                              'Introduced new Pokémon, breeding, and day/night cycles in Gold, Silver, and Crystal versions.';
+                            break;
+                          case 'generation-iii':
+                            region = 'Hoenn';
+                            releaseYear = '2002';
+                            gameDescription =
+                              'Featured a new region, abilities, and double battles in Ruby, Sapphire, and Emerald.';
+                            break;
+                          case 'generation-iv':
+                            region = 'Sinnoh';
+                            releaseYear = '2006';
+                            gameDescription =
+                              'Added physical and special moves along with online trading in Diamond, Pearl, and Platinum.';
+                            break;
+                          case 'generation-v':
+                            region = 'Unova';
+                            releaseYear = '2010';
+                            gameDescription =
+                              'Offered a new region with 3D graphics and new battle features in Black and White.';
+                            break;
+                          case 'generation-vi':
+                            region = 'Kalos';
+                            releaseYear = '2013';
+                            gameDescription =
+                              'Introduced Mega Evolutions and 3D models in X and Y.';
+                            break;
+                          case 'generation-vii':
+                            region = 'Alola';
+                            releaseYear = '2016';
+                            gameDescription =
+                              'Added regional variants and Z-moves in Sun and Moon.';
+                            break;
+                          case 'generation-viii':
+                            region = 'Galar';
+                            releaseYear = '2019';
+                            gameDescription =
+                              'Introduced the Galar region and Dynamaxing in Sword and Shield.';
+                            break;
+                          default:
+                            region = 'Unknown Region';
+                            releaseYear = 'Unknown Year';
+                            gameDescription = 'No description available.';
+                            break;
+                        }
+
+                        return (
+                          <tr
+                            key={`${generation}-${version}`}
+                            className="border"
+                          >
+                            <td className="px-4 py-2 border">
+                              {`${generation.replace(
+                                '-',
+                                ' '
+                              )} - ${version.replace('-', ' ')}`}
+                            </td>
+                            <td className="px-4 py-2 border">
+                              <img
+                                src={
+                                  images.animated?.front_default ||
+                                  images.front_default
+                                }
+                                alt={`${name} ${generation} ${version}`}
+                                className="object-contain w-16 h-16 sm:w-28 sm:h-28"
+                              />
+                            </td>
+                            <td className="px-4 py-2 text-center border">
+                              {region}
+                            </td>
+                            <td className="px-4 py-2 text-center border">
+                              {releaseYear}
+                            </td>
+                            <td className="px-4 py-2 text-center border">
+                              {gameDescription}
+                            </td>
+                            <td className="px-4 py-2 text-center border">
+                              {habitat}
+                            </td>
+                          </tr>
+                        );
+                      }
+                      return null;
+                    }
+                  );
+                }
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

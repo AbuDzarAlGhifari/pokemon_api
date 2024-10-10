@@ -58,8 +58,7 @@ export const fetchPokemonDetailsSearch = async (pokemonName) => {
   };
 };
 
-// Fetch detailed Pokemon data, including species and evolution chain
-// Fetch detailed Pokemon data, including species, evolution chain, and forms
+// Fetch detailed Pokemon data
 export const getPokemonDetails = async (id) => {
   try {
     const response = await axios.get(`${BASEAPI_URL}/pokemon/${id}`);
@@ -69,13 +68,13 @@ export const getPokemonDetails = async (id) => {
     );
 
     const generation = speciesResponse.data.generation.name;
-    const forms = speciesResponse.data.varieties; // This contains alternate forms like Mega and Gmax
+    const forms = speciesResponse.data.varieties;
 
     return {
       pokemon: response.data,
       evolutionChain: evolutionChainResponse.data,
       generation,
-      forms, // Include alternate forms
+      forms,
     };
   } catch (error) {
     throw new Error('Error fetching Pokémon details: ' + error.message);
