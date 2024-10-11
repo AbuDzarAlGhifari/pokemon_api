@@ -1,19 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   fetchPokemonDetailsSearch,
   fetchAllPokemonSearch,
 } from '../services/api';
-import ColorThief from 'colorthief';
-import typeColors from '../services/data';
-
-const darkenColor = (color) => {
-  const [r, g, b] = color;
-  return `rgb(${Math.max(r - 50, 0)}, ${Math.max(g - 50, 0)}, ${Math.max(
-    b - 50,
-    0
-  )})`;
-};
+import { getColorFromImage, darkenColor } from '../services/colorThiefService';
+import { typeColors } from '../services/data';
 
 const SearchResults = () => {
   const { term } = useParams();
@@ -21,16 +13,17 @@ const SearchResults = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [bgColors, setBgColors] = useState({});
-  const colorThief = useRef(new ColorThief());
   const navigate = useNavigate();
 
-  const handleImageLoad = (img, pokeId) => {
-    if (img.complete) {
-      const color = colorThief.current.getColor(img);
+  const handleImageLoad = async (img, pokeId) => {
+    try {
+      const color = await getColorFromImage(img);
       setBgColors((prevColors) => ({
         ...prevColors,
-        [pokeId]: `rgb(${color[0]}, ${color[1]}, ${color[2]}, 0.9)`,
+        [pokeId]: color,
       }));
+    } catch (error) {
+      console.error('Error extracting color:', error);
     }
   };
 
@@ -91,13 +84,7 @@ const SearchResults = () => {
                 </div>
                 <h1
                   className="text-xs font-extrabold capitalize sm:text-lg"
-                  style={{
-                    color: darkenColor(
-                      bgColors[pokemon.name]
-                        ? bgColors[pokemon.name].match(/\d+/g).map(Number)
-                        : [128, 128, 128]
-                    ),
-                  }}
+                  style={{ color: darkenColor(bgColors[pokemon.name]) }}
                 >
                   {pokemon.name}
                 </h1>

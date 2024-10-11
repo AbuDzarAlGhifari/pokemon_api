@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Dialog,
@@ -7,40 +7,26 @@ import {
   DialogHeader,
 } from '@material-tailwind/react';
 import { Link } from 'react-router-dom';
-import { IoClose, IoTimer } from 'react-icons/io5';
-import typeColors from '../services/data';
-import ColorThief from 'colorthief';
-import { FaHeart, FaShieldAlt } from 'react-icons/fa';
-import { RiSwordFill } from 'react-icons/ri';
-import { SiCodemagic } from 'react-icons/si';
-import { GiBorderedShield } from 'react-icons/gi';
+import { IoClose } from 'react-icons/io5';
+import {
+  getColorFromImage,
+  darkenColor,
+} from '../../services/colorThiefService';
+import { typeColors, getStatIcon, getStatColor } from '../../services/data';
 
-const Pokeinfo = ({ data, openModal, setOpenModal }) => {
+const ModalPokemonInfo = ({ data, openModal, setOpenModal }) => {
   const [bgColors, setBgColors] = useState({});
-  const colorThief = useRef(new ColorThief());
 
-  const handleImageLoad = (img, pokeId) => {
+  const handleImageLoad = async (img, pokeId) => {
     try {
-      if (img.complete && img.naturalHeight !== 0) {
-        const color = colorThief.current.getColor(img);
-        setBgColors((prevColors) => ({
-          ...prevColors,
-          [pokeId]: `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.9)`,
-        }));
-      }
+      const color = await getColorFromImage(img);
+      setBgColors((prevColors) => ({
+        ...prevColors,
+        [pokeId]: color,
+      }));
     } catch (error) {
       console.error('Error extracting color:', error);
     }
-  };
-
-  const darkenColor = (color) => {
-    if (!color) return 'rgb(128, 128, 128)';
-    const rgb = color.match(/\d+/g).map(Number);
-    const [r, g, b] = rgb;
-    return `rgb(${Math.max(r - 50, 0)}, ${Math.max(g - 50, 0)}, ${Math.max(
-      b - 50,
-      0
-    )})`;
   };
 
   if (!openModal) return null;
@@ -49,31 +35,6 @@ const Pokeinfo = ({ data, openModal, setOpenModal }) => {
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) closeModal();
-  };
-
-  const getStatColor = (stat) => {
-    if (stat <= 50) return 'to-red-500';
-    if (stat <= 100) return 'to-green-500';
-    return 'to-blue-500';
-  };
-
-  const getStatIcon = (statName) => {
-    switch (statName) {
-      case 'hp':
-        return <FaHeart className="inline-block mr-1" />;
-      case 'attack':
-        return <RiSwordFill className="inline-block mr-1" />;
-      case 'defense':
-        return <FaShieldAlt className="inline-block mr-1" />;
-      case 'special-attack':
-        return <SiCodemagic className="inline-block mr-1" />;
-      case 'special-defense':
-        return <GiBorderedShield className="inline-block mr-1" />;
-      case 'speed':
-        return <IoTimer className="inline-block mr-1" />;
-      default:
-        return null;
-    }
   };
 
   const { id, name, height, weight, types = [], stats = [], sprites } = data;
@@ -140,17 +101,26 @@ const Pokeinfo = ({ data, openModal, setOpenModal }) => {
                   className="mx-1 text-sm capitalize sm:mx-8 sm:text-md"
                   style={{ color: darkenColor(bgColors[id]) }}
                 >
-                  {getStatIcon(stat.stat.name)} {stat.stat.name}
+                  {React.createElement(getStatIcon[stat.stat.name], {
+                    className: 'inline-block mr-1',
+                  })}{' '}
+                  {stat.stat.name}
                 </p>
                 <div className="relative h-3 mx-1 overflow-hidden bg-gray-400 rounded-sm sm:h-3.5 sm:mx-8">
                   <div
-                    className={`h-full rounded-sm bg-gradient-to-r from-gray-500  ${getStatColor(
-                      stat.base_stat
-                    )}`}
+                    className={`h-full rounded-sm bg-gradient-to-r from-gray-500 ${
+                      getStatColor[
+                        stat.base_stat <= 50
+                          ? 'low'
+                          : stat.base_stat <= 100
+                          ? 'medium'
+                          : 'high'
+                      ]
+                    }`}
                     style={{ width: `${(stat.base_stat / 255) * 100}%` }}
                   ></div>
                   <p
-                    className="absolute top-0 right-0 mr-1 text-[10px] sm:text-xs "
+                    className="absolute top-0 right-0 mr-1 text-[10px] sm:text-xs"
                     style={{ color: darkenColor(bgColors[id]) }}
                   >
                     {stat.base_stat} / 255
@@ -172,4 +142,4 @@ const Pokeinfo = ({ data, openModal, setOpenModal }) => {
   );
 };
 
-export default Pokeinfo;
+export default ModalPokemonInfo;

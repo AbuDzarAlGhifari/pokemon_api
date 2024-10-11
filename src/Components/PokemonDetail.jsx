@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getPokemonDetails } from '../services/api';
 import { Spinner } from '@material-tailwind/react';
-import typeColors from '../services/data';
+import { typeColors } from '../services/data';
 import ColorThief from 'colorthief';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { GiBorderedShield } from 'react-icons/gi';
@@ -191,8 +191,6 @@ const PokemonDetail = () => {
     base_experience,
     stats,
     sprites,
-    game_indices,
-    cries,
   } = pokemon;
 
   const evolutionChainData = extractEvolutionChainData(evolutionChain);
@@ -485,9 +483,9 @@ const PokemonDetail = () => {
             className="py-2 mt-4 text-2xl font-extrabold text-center font-poppins"
             style={{ color: darkenColor(bgColors[pokemonId]) }}
           >
-            Version Images
+            Version Game
           </h1>
-          <table className="w-full border-collapse table-auto">
+          <table className="w-full overflow-x-auto border-collapse table-auto">
             <thead>
               <tr>
                 <th className="px-4 py-2 text-left border">Game</th>

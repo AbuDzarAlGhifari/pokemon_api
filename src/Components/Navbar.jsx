@@ -72,7 +72,7 @@ const Navbar = () => {
       suggestionsRef.current &&
       !suggestionsRef.current.contains(event.target)
     ) {
-      setFilteredPokemon([]); // Clear suggestions
+      setFilteredPokemon([]);
     }
   };
 

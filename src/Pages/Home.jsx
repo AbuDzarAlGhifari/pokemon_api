@@ -2,8 +2,8 @@ import { Button, Option, Select, Spinner } from '@material-tailwind/react';
 import React, { useEffect, useState } from 'react';
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 import { useSearchParams } from 'react-router-dom';
-import Card from '../Components/Card';
-import Pokeinfo from '../Components/Pokeinfo';
+import CardPokemon from '../Components/Card/CardPokemon';
+import ModalPokemonInfo from '../Components/Modal/ModalPokemonInfo';
 import {
   fetchAllPokemon,
   fetchAllTypes,
@@ -39,8 +39,8 @@ const Home = () => {
 
   const getTotalPages = (totalCount) => Math.ceil(totalCount / 15);
 
-  const handleInfoPokemon = (poke) => {
-    setPokeDex(poke);
+  const handleInfoPokemon = (pokemon) => {
+    setPokeDex(pokemon);
     setOpenModal(true);
   };
 
@@ -153,7 +153,7 @@ const Home = () => {
 
           <div className="bg-gray-300">
             <div className="pt-4 mx-1 sm:mx-4">
-              <Card pokemon={pokeData} infoPokemon={handleInfoPokemon} />
+              <CardPokemon pokemon={pokeData} infoPokemon={handleInfoPokemon} />
             </div>
 
             {selectedType ? (
@@ -208,7 +208,7 @@ const Home = () => {
           </div>
         </div>
       )}
-      <Pokeinfo
+      <ModalPokemonInfo
         data={pokeDex}
         openModal={openModal}
         setOpenModal={setOpenModal}
