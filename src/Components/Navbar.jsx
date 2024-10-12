@@ -72,7 +72,7 @@ const Navbar = () => {
       suggestionsRef.current &&
       !suggestionsRef.current.contains(event.target)
     ) {
-      setFilteredPokemon([]); // Clear suggestions
+      setFilteredPokemon([]);
     }
   };
 
@@ -95,7 +95,7 @@ const Navbar = () => {
           </p>
         </Link>
 
-        <div className="flex items-center mt-3 sm:mt-0">
+        <div className="flex flex-col items-center mt-3 text-center sm:flex-row sm:mt-0">
           <div className="flex gap-4 mr-3 text-xl text-gray-200">
             <Link
               to="/home"

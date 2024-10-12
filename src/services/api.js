@@ -75,6 +75,9 @@ export const getPokemonDetails = async (id) => {
       evolutionChain: evolutionChainResponse.data,
       generation,
       forms,
+      description: speciesResponse.data.flavor_text_entries.find(
+        (entry) => entry.language.name === 'en'
+      ).flavor_text,
     };
   } catch (error) {
     throw new Error('Error fetching Pokémon details: ' + error.message);

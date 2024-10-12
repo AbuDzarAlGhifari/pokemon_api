@@ -1,26 +1,22 @@
-import React, { useState, useRef } from 'react';
-import ColorThief from 'colorthief';
-import typeColors from '../services/data';
+import React, { useState } from 'react';
+import {
+  getColorFromImage,
+  darkenColor,
+} from '../../services/colorThiefService';
+import { typeColors } from '../../services/data';
 
-const darkenColor = (color) => {
-  const [r, g, b] = color;
-  return `rgb(${Math.max(r - 50, 0)}, ${Math.max(g - 50, 0)}, ${Math.max(
-    b - 50,
-    0
-  )})`;
-};
-
-const Card = ({ pokemon, infoPokemon }) => {
+const CardPokemon = ({ pokemon, infoPokemon }) => {
   const [bgColors, setBgColors] = useState({});
-  const colorThief = useRef(new ColorThief());
 
-  const handleImageLoad = (img, pokeId) => {
-    if (img.complete) {
-      const color = colorThief.current.getColor(img);
+  const handleImageLoad = async (img, pokeId) => {
+    try {
+      const color = await getColorFromImage(img);
       setBgColors((prevColors) => ({
         ...prevColors,
-        [pokeId]: `rgb(${color[0]}, ${color[1]}, ${color[2]}, 0.9)`,
+        [pokeId]: color,
       }));
+    } catch (error) {
+      console.error('Error extracting color:', error);
     }
   };
 
@@ -48,13 +44,7 @@ const Card = ({ pokemon, infoPokemon }) => {
             </div>
             <h1
               className="text-xs font-extrabold capitalize sm:text-lg"
-              style={{
-                color: darkenColor(
-                  bgColors[poke.id]
-                    ? bgColors[poke.id].match(/\d+/g).map(Number)
-                    : [128, 128, 128]
-                ),
-              }}
+              style={{ color: darkenColor(bgColors[poke.id]) }}
             >
               {poke.name}
             </h1>
@@ -77,4 +67,4 @@ const Card = ({ pokemon, infoPokemon }) => {
   );
 };
 
-export default Card;
+export default CardPokemon;
